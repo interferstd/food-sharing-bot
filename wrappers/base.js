@@ -26,6 +26,18 @@ class Base {
   sendProduct(obj){
 
   }
+  sendBaseConfig(obj){
+    /*
+    obj = {
+      name: string,
+      city: string,
+      location: {
+        "latitude": 55.641149,
+        "longitude": 37.328438
+      }
+    }
+    */
+  }
 }
 
 module.exports = Base;

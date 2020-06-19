@@ -14,7 +14,7 @@ new (class GiveFood extends Scene {
             name: null, // название продукта
             photos: [], // массив ссылок на фотографии
             category: null,
-            burnTine: null
+            burnTime: null
         };
         await ctx.reply("Вы зашли в раздел \"Отдать еду\". Тут можно добавить продукт.");
         // await ctx.scene.enter("TakeTimeQuery")
@@ -91,7 +91,6 @@ new (class PhotoQuery extends Scene {
         }
         break;
     }
-    break;
   }
   onPhoto(ctx) {
     const product = ctx.session.product; //  Получение продуктов из кеша
@@ -181,8 +180,7 @@ new (class CommentaryQuery extends Scene {
     const product = ctx.session.product;
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
-      console.log(product);
-      //TODO: Отправить product в БД
+      ctx.base.sendProduct(ctx.session.product.copy())
       await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
       await ctx.scene.enter("Main");
     } else if (ctx.message.text === "Назад") {
