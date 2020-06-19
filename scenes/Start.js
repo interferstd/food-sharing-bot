@@ -1,4 +1,4 @@
-const { Scene, Markup } = require("./Scenes");
+const { Scene } = require("./Scenes");
 
 new (class Start extends Scene {
   constructor() {
@@ -8,30 +8,9 @@ new (class Start extends Scene {
     };
   }
   enter(ctx) {
-    ctx.reply("Начальная конфигурация пользователя");
-    ctx.scene.enter("getStartUsername")
-   }
-})();
-
-
-new (class getStartUsername extends Scene {
-  constructor() {
-    super("getStartUsername");
-    super.struct = {
-      on: [
-        ["text", this.onText]
-      ],
-      enter: [[this.enter]]
-    };
-  }
-  enter(ctx){
-    ctx.reply("Введите ваше имя")
-  }
-  onText(ctx){
-    // TODO запомнить имя
-    console.log(ctx.message.text)
+    ctx.reply("Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем");
     ctx.scene.enter("getStartUserCity")
-  }
+   }
 })();
 
 
@@ -77,23 +56,3 @@ new (class getStartUserLocation extends Scene {
   }
 })();
 
-
-// new (class getStartUserLocation extends Scene {
-//   constructor() {
-//     super("getStartUserLocation");
-//     super.struct = {
-//       on: [
-//         ["text", this.onText]
-//       ],
-//       enter: [[this.enter]]
-//     };
-//   }
-//   enter(ctx){
-//     ctx.reply("Отправьте вашу геолокацию")
-//   }
-//   onText(ctx){
-//     // TODO запомнить геолокацию
-//     console.log(ctx.message.text)
-//     ctx.scene.enter("")
-//   }
-// })();
