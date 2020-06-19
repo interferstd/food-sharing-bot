@@ -51,6 +51,10 @@ new (class getStartUserLocation extends Scene {
   async onLocation(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig.location = ctx.message.location;
+
+    console.log(ctx.session.baseConfig)
+
+    //TODO: пофиксить
     ctx.base.sendBaseConfig(ctx.session.baseConfig.copy());
     await ctx.scene.enter("Main");
   }

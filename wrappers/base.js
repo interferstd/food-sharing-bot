@@ -27,6 +27,7 @@ class Base {
 
   }
   sendBaseConfig(obj){
+    console.log(obj)
     /*
     obj = {
       name: string,
