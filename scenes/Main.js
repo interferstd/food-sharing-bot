@@ -5,9 +5,7 @@ new (class Main extends Scene {
   constructor() {
     super("Main");
     super.struct = {
-      on: [
-        ["text", this.onText]
-      ],
+      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
@@ -35,5 +33,4 @@ new (class Main extends Scene {
         break;
     }
   }
-
 })();

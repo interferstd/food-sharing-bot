@@ -4,18 +4,17 @@ new (class TakeFood extends Scene {
   constructor() {
     super("TakeFood");
     super.struct = {
-      on: [
-        ["text", this.onText]
-      ],
+      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
-  async enter(ctx) {
-    await ctx.reply('Вы зашли в раздел "Взять еду"',
-        Markup.keyboard(["Назад"])
-            .oneTime()
-            .resize()
-            .extra()
+  enter(ctx) {
+    ctx.reply(
+      'Вы зашли в раздел "Взять еду"',
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
     );
 
     await ctx.reply()
