@@ -1,9 +1,9 @@
 const { Scene } = require("./Scenes");
 const Markup = require('telegraf/markup')
 
-new (class GiveFood extends Scene {
+new (class TakeFood extends Scene {
     constructor() {
-        super("GiveFood");
+        super("TakeFood");
         super.struct = {
             on: [
                 ["text", this.onText],
@@ -31,8 +31,8 @@ new (class GiveFood extends Scene {
     }
     async zahod(ctx) {
         await ctx.reply(
-            "Вы зашли в раздел \"Отдать еду\"",
+            "Вы зашли в раздел \"Взять еду\"",
             Markup.keyboard(["Назад"]).oneTime().resize().extra()
-            );
+        );
     }
 })();

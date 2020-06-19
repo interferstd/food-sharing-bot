@@ -1,4 +1,5 @@
 const { Scene } = require("./Scenes");
+const Markup = require('telegraf/markup')
 
 new (class Configuration extends Scene {
   constructor() {
@@ -16,12 +17,22 @@ new (class Configuration extends Scene {
     ctx.reply("Main");
   }
   onText(ctx) {
-    ctx.reply("Чё");
+    switch (ctx.message.text) {
+      case ("Назад"):
+        ctx.scene.enter("Main");
+        break;
+      default:
+        ctx.reply("Wrong!");
+        break;
+    }
   }
   onPhoto(ctx) {
     ctx.reply("Вау");
   }
   async zahod(ctx) {
-    await ctx.reply("123123123");
+    await ctx.reply(
+        "Вы зашли в раздел \"Конфигурация\"",
+        Markup.keyboard(["Назад"]).oneTime().resize().extra()
+    );
   }
 })();
