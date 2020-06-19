@@ -5,7 +5,23 @@ const SceneBase = require("telegraf/scenes/base");
 // Если нам понадобиться разбыть сцены по группам
 class Scenes {
   constructor() {
+    const Emitter = require("events").EventEmitter;
     this.scenesMap = new Map();
+    this.ControllerEmitter = new Emitter();
+  }
+  set Controller(struct) {
+    for (var name in struct) {
+      for (var args of struct[name]) {
+        switch (name) {
+          case "on":
+            this.ControllerEmitter.on(...args);
+            break;
+        }
+      }
+    }
+  }
+  get Controller() {
+    return this.ControllerEmitter;
   }
   get stage() {
     return new Stage(this.scenes);
@@ -22,13 +38,12 @@ class Scenes {
 }
 
 // Единыжды создаст контроллер сцен
-if (global.ScenesController === undefined)
-  global.ScenesController = new Scenes();
+if (global.Scenes === undefined) global.Scenes = new Scenes();
 
 class Scene {
   constructor(name) {
     this.name = name;
-    this.scene = global.ScenesController.scene[name] = new SceneBase(name);
+    this.scene = global.Scenes.scene[name] = new SceneBase(name);
   }
   get struct() {
     return this.sceneStruct;

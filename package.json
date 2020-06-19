@@ -9,6 +9,7 @@
     "go": "nodemon index"
   },
   "dependencies": {
+    "mongodb": "^3.5.9",
     "nodemon": "^2.0.4",
     "telegraf": "^3.38.0"
   }

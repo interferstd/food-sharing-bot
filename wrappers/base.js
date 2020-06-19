@@ -1,9 +1,20 @@
 class Base {
-  constructor(token) {
-    //this.mongo = require("mongoouse");
+  constructor(config) {
+    this.mongodb = require("mongodb");
+    this.connect(config);
+    //this. = db.collection('');
   }
-  static get(token) {
-    return new Base(token);
+  connect(config) {
+    this.mongodb.MongoClient(...config).connect((err, db) => {
+      if (err !== null) {
+        global.Scenes.Controller.emit("Error", err);
+      }
+      global.DataBase = db;
+      global.Scenes.Controller.emit("DataBaseConnected");
+    });
+  }
+  static get(config) {
+    return new Base(config);
   }
   middleware() {
     return (ctx, next) => {
