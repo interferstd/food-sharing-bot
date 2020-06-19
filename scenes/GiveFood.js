@@ -1,25 +1,29 @@
 const { Scene, Markup } = require("./Scenes");
 
 new (class GiveFood extends Scene {
-    constructor() {
-        super("GiveFood");
-        super.struct = {
-            enter: [[this.enter]]
-        };
-    }
-    async enter(ctx) {
-        ctx.session.product = {
-            _id: undefined, // ID продукта
-            authId: null, // это ID пользователя, отправившего продукт
-            name: null, // название продукта
-            photos: [], // массив ссылок на фотографии
-            category: null,
-            burnTime: null
-        };
-        await ctx.reply("Вы зашли в раздел \"Отдать еду\". Тут можно добавить продукт.");
-        // await ctx.scene.enter("TakeTimeQuery")
-        await ctx.scene.enter("NameQuery")
-    }
+  constructor() {
+    super("GiveFood");
+    super.struct = {
+      enter: [[this.enter]]
+    };
+  }
+  async enter(ctx) {
+    ctx.session.product = {
+      _id: undefined, // ID продукта
+      authId: null, // это ID пользователя, отправившего продукт
+      name: null, // название продукта
+      photos: [], // массив ссылок на фотографии
+      category: null,
+      burnTime: null,
+      location: {}
+    };
+    await ctx.reply(
+      'Вы зашли в раздел "Отдать еду". Тут можно добавить продукт.'
+    );
+    // TODO: поставить нормальный переход
+    //await ctx.scene.enter("TakeTimeQuery");
+    await ctx.scene.enter("NameQuery")
+  }
 })();
 
 new (class NameQuery extends Scene {
@@ -74,7 +78,7 @@ new (class PhotoQuery extends Scene {
     );
   }
   async onText(ctx) {
-    const product = ctx.session.product;
+    const {product} = ctx.session;
     switch (ctx.message.text) {
       case "Назад":
         await ctx.scene.enter("NameQuery");
@@ -92,11 +96,13 @@ new (class PhotoQuery extends Scene {
         break;
     }
   }
-  onPhoto(ctx) {
-    const product = ctx.session.product; //  Получение продуктов из кеша
+  async onPhoto(ctx) {
+    const {product} = ctx.session; //  Получение продуктов из кеша
     product.authId = ctx.from.id; //  Id пользователя
     product.photos = product.photos || [];
-    product.photos.push(ctx.message.photo.pop().file_id); //  Получение самой графонисторй фотографии
+    const file_id = ctx.message.photo.pop().file_id;
+    const link = await ctx.telegram.getFileLink(file_id);
+    product.photos.push({"id" : file_id, "url" : link}); //  Получение самой графонисторй фотографии
   }
 })();
 
@@ -117,9 +123,8 @@ new (class CategoryQuery extends Scene {
     };
   }
   async onText(ctx) {
-    const product = ctx.session.product;
     if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)) {
-      product.category = ctx.message.text;
+      ctx.session.product.category = ctx.message.text;
       await ctx.scene.enter("TakeTimeQuery");
     } else if (ctx.message.text === "Назад")
       await ctx.scene.enter("PhotoQuery");
@@ -148,10 +153,9 @@ new (class TakeTimeQuery extends Scene {
   }
   async onText(ctx) {
     if (Number(ctx.message.text) > 0) {
-      const product = ctx.session.product;
       let time = new Date();
       time.setHours(time.getHours() + ctx.message.text);
-      product.time = time;
+      ctx.session.product.burnTime = time;
       ctx.scene.enter("CommentaryQuery");
     } else {
       await ctx.reply("Формат неверен");
@@ -177,15 +181,55 @@ new (class CommentaryQuery extends Scene {
     );
   }
   async onText(ctx) {
-    const product = ctx.session.product;
+    const {product} = ctx.session;
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
-      ctx.base.sendProduct(ctx.session.product.copy())
-      await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
-      await ctx.scene.enter("Main");
+      await ctx.scene.enter("locationQuery");
     } else if (ctx.message.text === "Назад") {
       product.commentary = null;
       await ctx.scene.enter("TakeTimeQuery");
+    }
+  }
+})();
+
+new (class locationQuery extends Scene {
+  constructor() {
+    super("locationQuery");
+    super.struct = {
+      on: [
+          ["text", this.onText],
+          ["location", this.onLocation]
+      ],
+      enter: [[this.enter]]
+    };
+  }
+  async enter(ctx) {
+    await ctx.reply(
+        "Установите геометку",
+        Markup.keyboard(["Использовать стандартную", "Назад"])
+            .oneTime()
+            .resize()
+            .extra()
+    );
+  }
+  async onLocation(ctx) {
+    ctx.session.product.location = ctx.message.location;
+    // TODO: Отправить ctx.session.product в БД
+    console.log(ctx.session.product)
+    await ctx.scene.enter("Main");
+  }
+  async onText(ctx) {
+    switch (ctx.message.text) {
+      case ("Использовать стандартную"):
+        // TODO: обратиться к USER и присвоить ctx.session.product.location локацию изера
+        // TODO: Отправить ctx.session.product в БД
+          console.log(ctx.session.product)
+          await ctx.scene.enter("Main");
+        break;
+      case ("Назад"):
+        ctx.session.product.location = {};
+        await ctx.scene.enter("CommentaryQuery");
+        break;
     }
   }
 })();

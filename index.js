@@ -15,6 +15,7 @@ bot.use(
   // Telegraf.log(),
   global.Scenes.stage.middleware()
 );
+
 bot.start(ctx => ctx.scene.enter("Start"));
 
 global.Scenes.Controller = {
