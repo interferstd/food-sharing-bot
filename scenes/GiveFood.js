@@ -14,11 +14,12 @@ new (class GiveFood extends Scene {
             name: null, // название продукта
             photos: [], // массив ссылок на фотографии
             category: null,
-            takeUntil: null
+            burnTine: null
         };
         await ctx.reply("Вы зашли в раздел \"Отдать еду\". Тут можно добавить продукт.");
-        //await ctx.scene.enter("CategoryQuery")
-        await ctx.scene.enter("NameQuery")
+        // TODO поставить нормальный переход
+        await ctx.scene.enter("TakeTimeQuery")
+        // await ctx.scene.enter("NameQuery")
     }
 })();
 
@@ -128,6 +129,7 @@ new (class CategoryQuery extends Scene {
         );
     }
 })();
+
 new (class TakeTimeQuery extends Scene {
     constructor() {
         super("TakeTimeQuery");
@@ -138,33 +140,23 @@ new (class TakeTimeQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    onText(ctx) {
-        const product = ctx.session.product; // products.takeUntil - поле, в которое записываем время
-        switch (ctx.message.text) {
-            //TODO: time!
-            case ("До определённого часа"):
-
-                break;
-            case ("В определенный час"):
-
-                break;
-            case ("До определенного дня"):
-
-                break;
-            case ("В определенный день"):
-
-                break;
-        }
+    enter(ctx) {
+        ctx.reply("В течение скольки часов забрать еду?");
     }
-
-    async enter(ctx) {
-        await ctx.reply(
-            "Как забрать?",
-            Markup.keyboard(
-                ["До определённого часа", "В определенный час",
-                        "До определенного дня", "В определенный день"])
-                .oneTime().resize().extra()
-        );
+    onText(ctx) {
+        if(Number(ctx.message.text) > 0 ) {
+            const product = ctx.session.product;
+            let time = new Date();
+            time.setHours(time.getHours() + ctx.message.text);
+            product.time = time;
+            /////////////////
+            ctx.reply(time)
+            console.log(product)
+            /////////////////
+            ctx.reenter();
+        } else {
+            ctx.reply("Формат неверен");
+        }
     }
 })();
 
@@ -178,6 +170,13 @@ new (class CommentaryQuery extends Scene {
             enter: [[this.enter]]
         };
     }
+    enter(ctx) {
+        ctx.reply("Введите комментарий",
+            Markup.keyboard(
+                ["Назад"])
+                .oneTime().resize().extra()
+        );
+    }
     async onText(ctx) {
         const product = ctx.session.product;
         if (ctx.message.text) {
@@ -186,18 +185,10 @@ new (class CommentaryQuery extends Scene {
             //TODO Отправить product в БД
             await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
             await ctx.scene.enter("Main");
-        }else if (ctx.message.text == "Назад"){
+        }else if (ctx.message.text === "Назад"){
             product.commentary = null;
             ctx.scene.enter("TakeTimeQuery");
         }
     }
 
-    async enter(ctx) {
-        await ctx.reply(
-            "Введите комментарий",
-            Markup.keyboard(
-                ["Назад"])
-                .oneTime().resize().extra()
-        );
-    }
 })();
