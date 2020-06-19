@@ -41,11 +41,11 @@ new (class NameQuery extends Scene {
     onText(ctx) {
         switch (ctx.message.text) {
             case ("Назад"):
-                ctx.session.products.photos = null;
+                ctx.session.product.photos = null;
                 ctx.scene.enter("GiveFood");
                 break;
             default:
-                ctx.session.products.name = ctx.message.text;
+                ctx.session.product.name = ctx.message.text;
                 ctx.scene.enter("PhotoQuery");
                 break;
         }
@@ -70,29 +70,29 @@ new (class PhotoQuery extends Scene {
         );
     }
     onText(ctx) {
-        const products = ctx.session.products;
+        const product = ctx.session.product;
         switch (ctx.message.text) {
             case ("Назад"):
                 ctx.scene.enter("NameQuery");
-                products.photos = [];
+                product.photos = [];
                 break;
             case ("Загрузить"):
-                if (products.photos.length > 0 && products.photos.length < 10) {
+                if (product.photos.length > 0 && product.photos.length < 10) {
                     ctx.scene.enter("CategoryQuery");
                 } else {
                     ctx.reply("Загрузите корректное количество фотографий");
                     //  Очищение локального кеша с фотками
-                    products.photos = [];
+                    product.photos = [];
                     ctx.scene.reenter();
                 }
                 break;
         }
     }
     onPhoto(ctx) {
-        const products = ctx.session.products; //  Получение продуктов из кеша
-        products.authId = ctx.from.id; //  Id пользователя
-        products.photos = products.photos || [];
-        products.photos.push(ctx.message.photo.pop().file_id); //  Получение самой графонисторй фотографии
+        const product = ctx.session.product; //  Получение продуктов из кеша
+        product.authId = ctx.from.id; //  Id пользователя
+        product.photos = product.photos || [];
+        product.photos.push(ctx.message.photo.pop().file_id); //  Получение самой графонисторй фотографии
     }
 })();
 
@@ -115,9 +115,9 @@ new (class CategoryQuery extends Scene {
         };
     }
     onText(ctx) {
-        const products = ctx.session.products;
+        const product = ctx.session.product;
         if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)){
-            products.category = ctx.message.text;
+            product.category = ctx.message.text;
             ctx.scene.enter("TakeTimeQuery")
         }else if (ctx.message.text == "Назад") ctx.scene.enter("PhotoQuery");
     }
@@ -140,7 +140,7 @@ new (class TakeTimeQuery extends Scene {
         };
     }
     onText(ctx) {
-        const products = ctx.session.products; // products.takeUntil - поле, в которое записываем время
+        const product = ctx.session.product; // products.takeUntil - поле, в которое записываем время
         switch (ctx.message.text) {
             //TODO: time!
             case ("До определённого часа"):
