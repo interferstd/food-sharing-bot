@@ -16,6 +16,6 @@ bot.use(
   Telegraf.log()
 );
 
-bot.start(ctx => ctx.scene.enter("Configuration"));
+bot.start(ctx => ctx.scene.enter("Main"));
 
 bot.launch().then(() => console.log("Listening..."));

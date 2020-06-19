@@ -1,9 +1,9 @@
 const { Scene } = require("./Scenes");
 const Markup = require("telegraf/markup");
 
-new (class GiveFood extends Scene {
+new (class TakeFood extends Scene {
   constructor() {
-    super("GiveFood");
+    super("TakeFood");
     super.struct = {
       on: [
         ["text", this.onText],
@@ -17,12 +17,25 @@ new (class GiveFood extends Scene {
     ctx.reply("Main");
   }
   onText(ctx) {
-    ctx.reply("Чё");
+    switch (ctx.message.text) {
+      case "Назад":
+        ctx.scene.enter("Main");
+        break;
+      default:
+        ctx.reply("Wrong!");
+        break;
+    }
   }
   onPhoto(ctx) {
     ctx.reply("Вау");
   }
   async zahod(ctx) {
-    await ctx.reply('Зашли в раздел "Отдать еду"');
+    await ctx.reply(
+      'Вы зашли в раздел "Взять еду"',
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
 })();
