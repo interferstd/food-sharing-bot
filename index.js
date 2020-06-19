@@ -6,7 +6,7 @@ const {
   ScenesController
 } = require("./scenes");
 
-const {token} = require("config.json");
+const { token } = require("./config.json");
 const bot = new Telegraf(token);
 
 bot.use(
@@ -16,6 +16,6 @@ bot.use(
   Telegraf.log()
 );
 
-bot.start(ctx => ctx.scene.enter("Configuration"));
+bot.start(ctx => ctx.scene.enter("Start"));
 
 bot.launch().then(() => console.log("Listening..."));

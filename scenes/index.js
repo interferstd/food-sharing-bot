@@ -1,5 +1,5 @@
 if (global.ScenesController === undefined)
-  ["Start"].map(name => {
+  ["Main", "Start", "GiveFood", "TakeFood"].map(name => {
     require("./" + name);
   });
 
