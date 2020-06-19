@@ -29,7 +29,7 @@ new (class getStartUserCity extends Scene {
     await ctx.reply("Введите ваш город");
   }
   async onText(ctx) {
-    // TODO запомнить город
+    // TODO: запомнить город
     console.log(ctx.message.text);
     await ctx.scene.enter("getStartUserLocation");
   }
@@ -47,7 +47,7 @@ new (class getStartUserLocation extends Scene {
     await ctx.reply("Отправьте вашу геолокацию");
   }
   async onLocation(ctx) {
-    // TODO запомнить геолокацию
+    // TODO: запомнить геолокацию
     console.log(ctx.message.location);
     await ctx.scene.enter("Main");
   }

@@ -19,7 +19,7 @@ new (class GiveFood extends Scene {
     await ctx.reply(
       'Вы зашли в раздел "Отдать еду". Тут можно добавить продукт.'
     );
-    // TODO поставить нормальный переход
+    // TODO: поставить нормальный переход
     await ctx.scene.enter("TakeTimeQuery");
     // await ctx.scene.enter("NameQuery")
   }
@@ -185,7 +185,7 @@ new (class CommentaryQuery extends Scene {
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
       console.log(product);
-      //TODO Отправить product в БД
+      //TODO: Отправить product в БД
       await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
       await ctx.scene.enter("Main");
     } else if (ctx.message.text === "Назад") {
