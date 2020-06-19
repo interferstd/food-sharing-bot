@@ -1,0 +1,15 @@
+{
+  "name": "food-sharing-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/interferstd/food-sharing-bot.git",
+  "author": "zaver <sasha30402@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "go": "nodemon index"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.4",
+    "telegraf": "^3.38.0"
+  }
+}
