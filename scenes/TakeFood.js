@@ -1,20 +1,22 @@
-const { Scene } = require("./Scenes");
-const Markup = require("telegraf/markup");
+const { Scene, Markup } = require("./Scenes");
 
 new (class TakeFood extends Scene {
   constructor() {
     super("TakeFood");
     super.struct = {
       on: [
-        ["text", this.onText],
-        ["photo", this.onPhoto]
+        ["text", this.onText]
       ],
-      start: [[this.main]],
-      enter: [[this.zahod]]
+      enter: [[this.enter]]
     };
   }
-  main(ctx) {
-    ctx.reply("Main");
+  enter(ctx) {
+    ctx.reply('Вы зашли в раздел "Взять еду"',
+        Markup.keyboard(["Назад"])
+            .oneTime()
+            .resize()
+            .extra()
+    );
   }
   onText(ctx) {
     switch (ctx.message.text) {
@@ -25,17 +27,5 @@ new (class TakeFood extends Scene {
         ctx.reply("Wrong!");
         break;
     }
-  }
-  onPhoto(ctx) {
-    ctx.reply("Вау");
-  }
-  async zahod(ctx) {
-    await ctx.reply(
-      'Вы зашли в раздел "Взять еду"',
-      Markup.keyboard(["Назад"])
-        .oneTime()
-        .resize()
-        .extra()
-    );
   }
 })();

@@ -170,6 +170,13 @@ new (class CommentaryQuery extends Scene {
             enter: [[this.enter]]
         };
     }
+    enter(ctx) {
+        ctx.reply("Введите комментарий",
+            Markup.keyboard(
+                ["Назад"])
+                .oneTime().resize().extra()
+        );
+    }
     async onText(ctx) {
         const product = ctx.session.product;
         if (ctx.message.text) {
@@ -178,18 +185,10 @@ new (class CommentaryQuery extends Scene {
             //TODO Отправить product в БД
             await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
             await ctx.scene.enter("Main");
-        }else if (ctx.message.text == "Назад"){
+        }else if (ctx.message.text === "Назад"){
             product.commentary = null;
             ctx.scene.enter("TakeTimeQuery");
         }
     }
 
-    async enter(ctx) {
-        await ctx.reply(
-            "Введите комментарий",
-            Markup.keyboard(
-                ["Назад"])
-                .oneTime().resize().extra()
-        );
-    }
 })();
