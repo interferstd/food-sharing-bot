@@ -121,7 +121,6 @@ new (class CategoryQuery extends Scene {
             ctx.scene.enter("TakeTimeQuery")
         }else if (ctx.message.text == "Назад") ctx.scene.enter("PhotoQuery");
     }
-
     async enter(ctx) {
         await ctx.reply(
             "Выберите категорию",
@@ -164,6 +163,40 @@ new (class TakeTimeQuery extends Scene {
             Markup.keyboard(
                 ["До определённого часа", "В определенный час",
                         "До определенного дня", "В определенный день"])
+                .oneTime().resize().extra()
+        );
+    }
+})();
+
+new (class CommentaryQuery extends Scene {
+    constructor() {
+        super("CommentaryQuery");
+        super.struct = {
+            on: [
+                ["text", this.onText],
+            ],
+            enter: [[this.enter]]
+        };
+    }
+    async onText(ctx) {
+        const product = ctx.session.product;
+        if (ctx.message.text) {
+            product.commentary = ctx.message.text;
+            console.log(product);
+            //TODO Отправить product в БД
+            await ctx.reply(`Вы успешно добавили товар: ${product.name}!`);
+            await ctx.scene.enter("Main");
+        }else if (ctx.message.text == "Назад"){
+            product.commentary = null;
+            ctx.scene.enter("TakeTimeQuery");
+        }
+    }
+
+    async enter(ctx) {
+        await ctx.reply(
+            "Введите комментарий",
+            Markup.keyboard(
+                ["Назад"])
                 .oneTime().resize().extra()
         );
     }

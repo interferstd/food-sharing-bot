@@ -9,7 +9,7 @@ new (class Start extends Scene {
   }
   enter(ctx) {
     ctx.reply("Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем");
-    ctx.scene.enter("GiveFood")
+    ctx.scene.enter("getStartUserCity")
    }
 })();
 
