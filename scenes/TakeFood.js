@@ -8,7 +8,7 @@ new (class TakeFood extends Scene {
       enter: [[this.enter]]
     };
   }
-  enter(ctx) {
+  async enter(ctx) {
     ctx.reply(
       'Вы зашли в раздел "Взять еду"',
       Markup.keyboard(["Назад"])
@@ -16,6 +16,8 @@ new (class TakeFood extends Scene {
         .resize()
         .extra()
     );
+
+    await ctx.reply("123")
   }
   async onText(ctx) {
     switch (ctx.message.text) {
@@ -27,13 +29,5 @@ new (class TakeFood extends Scene {
         break;
     }
   }
-  async enter(ctx) {
-    await ctx.reply(
-      'Вы зашли в раздел "Взять еду"',
-      Markup.keyboard(["Назад"])
-        .oneTime()
-        .resize()
-        .extra()
-    );
-  }
+
 })();

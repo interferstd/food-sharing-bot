@@ -8,12 +8,15 @@ new (class Start extends Scene {
     };
   }
   async enter(ctx) {
+    ctx.session.baseConfig = {
+      name: null,
+      city: null,
+      location: null
+    }
     await ctx.reply(
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
     );
-    // Для быстрого роутинга
-    await ctx.scene.enter("GiveFood");
-    // ctx.scene.enter("getStartUserCity")
+    await ctx.scene.enter("getStartUserCity")
   }
 })();
 
@@ -29,8 +32,7 @@ new (class getStartUserCity extends Scene {
     await ctx.reply("Введите ваш город");
   }
   async onText(ctx) {
-    // TODO: запомнить город
-    console.log(ctx.message.text);
+    ctx.session.baseConfig.city = ctx.message.text;
     await ctx.scene.enter("getStartUserLocation");
   }
 })();
@@ -47,8 +49,13 @@ new (class getStartUserLocation extends Scene {
     await ctx.reply("Отправьте вашу геолокацию");
   }
   async onLocation(ctx) {
-    // TODO: запомнить геолокацию
-    console.log(ctx.message.location);
+    ctx.session.baseConfig.name = ctx.from.first_name;
+    ctx.session.baseConfig.location = ctx.message.location;
+
+    console.log(ctx.session.baseConfig)
+
+    //TODO: пофиксить
+    ctx.base.sendBaseConfig(ctx.session.baseConfig.copy());
     await ctx.scene.enter("Main");
   }
 })();

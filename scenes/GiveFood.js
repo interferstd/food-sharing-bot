@@ -1,6 +1,5 @@
 const { Scene, Markup } = require("./Scenes");
 
-
 new (class GiveFood extends Scene {
   constructor() {
     super("GiveFood");

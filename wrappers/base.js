@@ -37,6 +37,22 @@ class Base {
       next();
     };
   }
+  sendProduct(obj){
+
+  }
+  sendBaseConfig(obj){
+    console.log(obj)
+    /*
+    obj = {
+      name: string,
+      city: string,
+      location: {
+        "latitude": 55.641149,
+        "longitude": 37.328438
+      }
+    }
+    */
+  }
 }
 
 module.exports = Base;
