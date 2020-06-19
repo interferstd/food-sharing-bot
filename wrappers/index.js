@@ -9,7 +9,7 @@ module.exports = (ctx, next) => {
   });
   if (doNext) {
     doNext = false;
-    user.middleware()(ctx, () => {
+    base.middleware()(ctx, () => {
       doNext = true;
     });
   }
