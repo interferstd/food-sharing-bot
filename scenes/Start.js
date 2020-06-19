@@ -4,10 +4,10 @@ new (class Start extends Scene {
   constructor() {
     super("Start");
     super.struct = {
-      start: [[this.start]]
+      enter: [[this.enter]]
     };
   }
-  start(ctx) {
+  enter(ctx) {
     ctx.reply("Начальная конфигурация пользователя");
     ctx.scene.enter("getStartUsername")
    }
@@ -61,7 +61,7 @@ new (class getStartUserLocation extends Scene {
     super("getStartUserLocation");
     super.struct = {
       on: [
-        ["text", this.onText]
+        ["location", this.onLocation]
       ],
       enter: [[this.enter]]
     };
@@ -69,10 +69,11 @@ new (class getStartUserLocation extends Scene {
   enter(ctx){
     ctx.reply("Отправьте вашу геолокацию")
   }
-  onText(ctx){
+  onLocation(ctx){
     // TODO запомнить геолокацию
-    console.log(ctx.message.text)
-    ctx.scene.enter("")
+    console.log(ctx.message.location)
+    ctx.scene.enter("Main")
+
   }
 })();
 

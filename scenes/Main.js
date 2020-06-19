@@ -6,16 +6,22 @@ new (class Main extends Scene {
     super("Main");
     super.struct = {
       on: [
-        ["text", this.onText],
-        ["photo", this.onPhoto]
+        ["text", this.onText]
       ],
-      start: [[this.main]],
-      enter: [[this.zahod]]
+      enter: [[this.enter]]
     };
   }
-  main(ctx) {
-    ctx.reply("Main");
+
+  enter(ctx) {
+    ctx.reply(
+      "Добро пожаловать! Это сцена Main.",
+      Markup.keyboard(["Конфигурация", "Отдать еду", "Взять еду"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
+
   onText(ctx) {
     switch (ctx.message.text) {
       case "Конфигурация":
@@ -27,20 +33,7 @@ new (class Main extends Scene {
       case "Взять еду":
         ctx.scene.enter("TakeFood");
         break;
-      default:
-        ctx.reply("Wrong!");
     }
   }
-  onPhoto(ctx) {
-    ctx.reply("Вау");
-  }
-  async zahod(ctx) {
-    await ctx.reply(
-      "Добро пожаловать! Это сцена Main.",
-      Markup.keyboard(["Конфигурация", "Отдать еду", "Взять еду"])
-        .oneTime()
-        .resize()
-        .extra()
-    );
-  }
+
 })();
