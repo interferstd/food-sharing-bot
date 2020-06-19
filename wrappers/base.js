@@ -23,11 +23,9 @@ class Base {
       next();
     };
   }
-  sendProduct(obj){
-
-  }
-  sendBaseConfig(obj){
-    console.log(obj)
+  sendProduct(obj) {}
+  sendConfig(obj) {
+    console.log(obj);
     /*
     obj = {
       name: string,

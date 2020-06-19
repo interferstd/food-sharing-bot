@@ -12,11 +12,11 @@ new (class Start extends Scene {
       name: null,
       city: null,
       location: null
-    }
+    };
     await ctx.reply(
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
     );
-    await ctx.scene.enter("getStartUserCity")
+    await ctx.scene.enter("getStartUserCity");
   }
 })();
 
@@ -52,10 +52,7 @@ new (class getStartUserLocation extends Scene {
     ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig.location = ctx.message.location;
 
-    console.log(ctx.session.baseConfig)
-
-    //TODO: пофиксить
-    ctx.base.sendBaseConfig(ctx.session.baseConfig.copy());
+    ctx.base.sendConfig(ctx.session.baseConfig);
     await ctx.scene.enter("Main");
   }
 })();
