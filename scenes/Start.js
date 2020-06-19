@@ -8,53 +8,47 @@ new (class Start extends Scene {
     };
   }
   enter(ctx) {
-    ctx.reply("Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем");
+    ctx.reply(
+      "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
+    );
     // Для быстрого роутинга
     ctx.scene.enter("GiveFood");
     // ctx.scene.enter("getStartUserCity")
-   }
+  }
 })();
-
 
 new (class getStartUserCity extends Scene {
   constructor() {
     super("getStartUserCity");
     super.struct = {
-      on: [
-        ["text", this.onText]
-      ],
+      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
-  enter(ctx){
-    ctx.reply("Введите ваш город")
+  enter(ctx) {
+    ctx.reply("Введите ваш город");
   }
-  onText(ctx){
+  onText(ctx) {
     // TODO запомнить город
-    console.log(ctx.message.text)
-    ctx.scene.enter("getStartUserLocation")
+    console.log(ctx.message.text);
+    ctx.scene.enter("getStartUserLocation");
   }
 })();
-
 
 new (class getStartUserLocation extends Scene {
   constructor() {
     super("getStartUserLocation");
     super.struct = {
-      on: [
-        ["location", this.onLocation]
-      ],
+      on: [["location", this.onLocation]],
       enter: [[this.enter]]
     };
   }
-  enter(ctx){
-    ctx.reply("Отправьте вашу геолокацию")
+  enter(ctx) {
+    ctx.reply("Отправьте вашу геолокацию");
   }
-  onLocation(ctx){
+  onLocation(ctx) {
     // TODO запомнить геолокацию
-    console.log(ctx.message.location)
-    ctx.scene.enter("Main")
-
+    console.log(ctx.message.location);
+    ctx.scene.enter("Main");
   }
 })();
-
