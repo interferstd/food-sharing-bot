@@ -6,7 +6,8 @@ const {
   ScenesController
 } = require("./scenes");
 
-const bot = new Telegraf("");
+const {token} = require("config.json");
+const bot = new Telegraf(token);
 
 bot.use(
   session(),

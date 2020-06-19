@@ -1,5 +1,5 @@
 if (global.ScenesController === undefined)
-  ["Configuration"].map(name => {
+  ["Start"].map(name => {
     require("./" + name);
   });
 
