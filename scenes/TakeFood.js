@@ -10,28 +10,25 @@ new (class TakeFood extends Scene {
       enter: [[this.enter]]
     };
   }
-  enter(ctx) {
-    ctx.reply('Вы зашли в раздел "Взять еду"',
+  async enter(ctx) {
+    await ctx.reply('Вы зашли в раздел "Взять еду"',
         Markup.keyboard(["Назад"])
             .oneTime()
             .resize()
             .extra()
     );
   }
-  onText(ctx) {
+  async onText(ctx) {
     switch (ctx.message.text) {
       case "Назад":
-        ctx.scene.enter("Main");
+        await ctx.scene.enter("Main");
         break;
       default:
-        ctx.reply("Wrong!");
+        await ctx.reply("Wrong!");
         break;
     }
   }
-  onPhoto(ctx) {
-    ctx.reply("Вау");
-  }
-  async zahod(ctx) {
+  async enter(ctx) {
     await ctx.reply(
       'Вы зашли в раздел "Взять еду"',
       Markup.keyboard(["Назад"])

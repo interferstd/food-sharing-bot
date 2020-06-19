@@ -8,7 +8,7 @@ new (class GiveFood extends Scene {
         };
     }
     async enter(ctx) {
-        ctx.session.product = {
+        await ctx.session.product = {
             _id: undefined, // ID продукта
             authId: null, // это ID пользователя, отправившего продукт
             name: null, // название продукта
@@ -33,21 +33,21 @@ new (class NameQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    enter(ctx) {
-        ctx.reply(
+    async enter(ctx) {
+        await ctx.reply(
             "Введите название продукта",
             Markup.keyboard(["Назад"]).oneTime().resize().extra()
         );
     }
-    onText(ctx) {
+    async onText(ctx) {
         switch (ctx.message.text) {
             case ("Назад"):
-                ctx.session.product.photos = null;
-                ctx.scene.enter("GiveFood");
+                await ctx.session.product.photos = null;
+                await ctx.scene.enter("GiveFood");
                 break;
             default:
-                ctx.session.product.name = ctx.message.text;
-                ctx.scene.enter("PhotoQuery");
+                await ctx.session.product.name = ctx.message.text;
+                await ctx.scene.enter("PhotoQuery");
                 break;
         }
     }
@@ -64,27 +64,27 @@ new (class PhotoQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    enter(ctx) {
-        ctx.reply(
+    async enter(ctx) {
+        await ctx.reply(
             "Загрузите от 1 до 10 фотографий продукта",
             Markup.keyboard(["Загрузить", "Назад"]).oneTime().resize().extra()
         );
     }
-    onText(ctx) {
+    async onText(ctx) {
         const product = ctx.session.product;
         switch (ctx.message.text) {
             case ("Назад"):
-                ctx.scene.enter("NameQuery");
+                await ctx.scene.enter("NameQuery");
                 product.photos = [];
                 break;
             case ("Загрузить"):
                 if (product.photos.length > 0 && product.photos.length < 10) {
-                    ctx.scene.enter("CategoryQuery");
+                    await ctx.scene.enter("CategoryQuery");
                 } else {
-                    ctx.reply("Загрузите корректное количество фотографий");
+                    await ctx.reply("Загрузите корректное количество фотографий");
                     //  Очищение локального кеша с фотками
                     product.photos = [];
-                    ctx.scene.reenter();
+                    await ctx.scene.reenter();
                 }
                 break;
         }
@@ -115,12 +115,12 @@ new (class CategoryQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    onText(ctx) {
+    async onText(ctx) {
         const product = ctx.session.product;
         if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)){
             product.category = ctx.message.text;
-            ctx.scene.enter("TakeTimeQuery")
-        }else if (ctx.message.text == "Назад") ctx.scene.enter("PhotoQuery");
+            await ctx.scene.enter("TakeTimeQuery")
+        }else if (ctx.message.text == "Назад") await ctx.scene.enter("PhotoQuery");
     }
     async enter(ctx) {
         await ctx.reply(
@@ -140,22 +140,22 @@ new (class TakeTimeQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    enter(ctx) {
-        ctx.reply("В течение скольки часов забрать еду?");
+    async enter(ctx) {
+        await ctx.reply("В течение скольки часов забрать еду?");
     }
-    onText(ctx) {
+    async onText(ctx) {
         if(Number(ctx.message.text) > 0 ) {
             const product = ctx.session.product;
             let time = new Date();
             time.setHours(time.getHours() + ctx.message.text);
             product.time = time;
             /////////////////
-            ctx.reply(time)
+            await ctx.reply(time)
             console.log(product)
             /////////////////
-            ctx.reenter();
+            await ctx.scene.reenter();
         } else {
-            ctx.reply("Формат неверен");
+            await ctx.reply("Формат неверен");
         }
     }
 })();
@@ -170,8 +170,8 @@ new (class CommentaryQuery extends Scene {
             enter: [[this.enter]]
         };
     }
-    enter(ctx) {
-        ctx.reply("Введите комментарий",
+    async enter(ctx) {
+        await ctx.reply("Введите комментарий",
             Markup.keyboard(
                 ["Назад"])
                 .oneTime().resize().extra()
@@ -187,7 +187,7 @@ new (class CommentaryQuery extends Scene {
             await ctx.scene.enter("Main");
         }else if (ctx.message.text === "Назад"){
             product.commentary = null;
-            ctx.scene.enter("TakeTimeQuery");
+            await ctx.scene.enter("TakeTimeQuery");
         }
     }
 

@@ -7,10 +7,10 @@ new (class Start extends Scene {
       enter: [[this.enter]]
     };
   }
-  enter(ctx) {
-    ctx.reply("Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем");
+  async enter(ctx) {
+    await ctx.reply("Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем");
     // Для быстрого роутинга
-    ctx.scene.enter("GiveFood");
+    await ctx.scene.enter("GiveFood");
     // ctx.scene.enter("getStartUserCity")
    }
 })();
@@ -26,13 +26,13 @@ new (class getStartUserCity extends Scene {
       enter: [[this.enter]]
     };
   }
-  enter(ctx){
-    ctx.reply("Введите ваш город")
+  async enter(ctx){
+    await ctx.reply("Введите ваш город")
   }
-  onText(ctx){
+  async onText(ctx){
     // TODO запомнить город
     console.log(ctx.message.text)
-    ctx.scene.enter("getStartUserLocation")
+    await ctx.scene.enter("getStartUserLocation")
   }
 })();
 
@@ -47,13 +47,13 @@ new (class getStartUserLocation extends Scene {
       enter: [[this.enter]]
     };
   }
-  enter(ctx){
-    ctx.reply("Отправьте вашу геолокацию")
+  async enter(ctx){
+    await ctx.reply("Отправьте вашу геолокацию")
   }
-  onLocation(ctx){
+  async onLocation(ctx){
     // TODO запомнить геолокацию
     console.log(ctx.message.location)
-    ctx.scene.enter("Main")
+    await ctx.scene.enter("Main")
 
   }
 })();

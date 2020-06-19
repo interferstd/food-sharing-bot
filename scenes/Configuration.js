@@ -12,14 +12,14 @@ new (class Configuration extends Scene {
       enter: [[this.zahod]]
     };
   }
-  main(ctx) {
-    ctx.reply("Main");
+  async main(ctx) {
+    await ctx.reply("Main");
   }
-  onText(ctx) {
-    ctx.reply("Чё");
+  async onText(ctx) {
+    await ctx.reply("Чё");
   }
-  onPhoto(ctx) {
-    ctx.reply("Вау");
+  async onPhoto(ctx) {
+    await ctx.reply("Вау");
   }
   async zahod(ctx) {
     await ctx.reply("123123123");
