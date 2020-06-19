@@ -12,8 +12,8 @@ const bot = new Telegraf(token);
 bot.use(
   session(),
   require("./wrappers"),
-  global.ScenesController.stage.middleware(),
-  Telegraf.log()
+  Telegraf.log(),
+  global.ScenesController.stage.middleware()
 );
 
 bot.start(ctx => ctx.scene.enter("Start"));
