@@ -1,6 +1,6 @@
-class User {
+class Base {
   constructor(token) {
-    this.mongo = require("mongoouse");
+    //this.mongo = require("mongoouse");
   }
   static get(token) {
     return new Base(token);
@@ -12,3 +12,5 @@ class User {
     };
   }
 }
+
+module.exports = Base;

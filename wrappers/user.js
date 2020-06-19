@@ -16,3 +16,5 @@ class User {
     await this.main(ctx);
   }
 }
+
+module.exports = User;
