@@ -7,15 +7,11 @@ new (class TakeFood extends Scene {
         super.struct = {
             on: [
                 ["text", this.onText],
-                ["photo", this.onPhoto]
             ],
-            start: [[this.main]],
             enter: [[this.zahod]]
         };
     }
-    main(ctx) {
-        ctx.reply("Main");
-    }
+
     onText(ctx) {
         switch (ctx.message.text) {
             case ("Назад"):
@@ -26,11 +22,8 @@ new (class TakeFood extends Scene {
                 break;
         }
     }
-    onPhoto(ctx) {
-        ctx.reply("Вау");
-    }
-    async zahod(ctx) {
-        await ctx.reply(
+    zahod(ctx) {
+        ctx.reply(
             "Вы зашли в раздел \"Взять еду\"",
             Markup.keyboard(["Назад"]).oneTime().resize().extra()
         );
