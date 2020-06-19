@@ -120,7 +120,7 @@ new (class CategoryQuery extends Scene {
         if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)){
             product.category = ctx.message.text;
             await ctx.scene.enter("TakeTimeQuery")
-        }else if (ctx.message.text == "Назад") await ctx.scene.enter("PhotoQuery");
+        }else if (ctx.message.text === "Назад") await ctx.scene.enter("PhotoQuery");
     }
     async enter(ctx) {
         await ctx.reply(
@@ -149,11 +149,7 @@ new (class TakeTimeQuery extends Scene {
             let time = new Date();
             time.setHours(time.getHours() + ctx.message.text);
             product.time = time;
-            /////////////////
-            await ctx.reply(time)
-            console.log(product)
-            /////////////////
-            await ctx.scene.reenter();
+            ctx.scene.enter("CommentaryQuery");
         } else {
             await ctx.reply("Формат неверен");
         }
