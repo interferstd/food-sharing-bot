@@ -12,10 +12,19 @@ const bot = new Telegraf(token);
 bot.use(
   session(),
   require("./wrappers"),
-  Telegraf.log(),
-  global.ScenesController.stage.middleware()
+  // Telegraf.log(),
+  global.Scenes.stage.middleware()
 );
-
 bot.start(ctx => ctx.scene.enter("Start"));
 
-bot.launch().then(() => console.log("Listening..."));
+global.Scenes.Controller = {
+  on: [
+    ["Error", console.log],
+    [
+      "DataBaseConnected",
+      function() {
+        bot.launch().then(() => console.log("Listening..."));
+      }
+    ]
+  ]
+};
