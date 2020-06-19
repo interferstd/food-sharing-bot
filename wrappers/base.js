@@ -23,6 +23,9 @@ class Base {
       next();
     };
   }
+  sendProduct(obj){
+
+  }
 }
 
 module.exports = Base;

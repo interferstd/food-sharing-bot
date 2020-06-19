@@ -8,7 +8,7 @@ new (class GiveFood extends Scene {
         };
     }
     async enter(ctx) {
-        await ctx.session.product = {
+        ctx.session.product = {
             _id: undefined, // ID продукта
             authId: null, // это ID пользователя, отправившего продукт
             name: null, // название продукта
@@ -17,9 +17,8 @@ new (class GiveFood extends Scene {
             burnTine: null
         };
         await ctx.reply("Вы зашли в раздел \"Отдать еду\". Тут можно добавить продукт.");
-        // TODO поставить нормальный переход
-        await ctx.scene.enter("TakeTimeQuery")
-        // await ctx.scene.enter("NameQuery")
+        // await ctx.scene.enter("TakeTimeQuery")
+        await ctx.scene.enter("NameQuery")
     }
 })();
 
@@ -42,11 +41,11 @@ new (class NameQuery extends Scene {
     async onText(ctx) {
         switch (ctx.message.text) {
             case ("Назад"):
-                await ctx.session.product.photos = null;
+                ctx.session.product.photos = null;
                 await ctx.scene.enter("GiveFood");
                 break;
             default:
-                await ctx.session.product.name = ctx.message.text;
+                ctx.session.product.name = ctx.message.text;
                 await ctx.scene.enter("PhotoQuery");
                 break;
         }
@@ -148,8 +147,8 @@ new (class TakeTimeQuery extends Scene {
             const product = ctx.session.product;
             let time = new Date();
             time.setHours(time.getHours() + ctx.message.text);
-            product.time = time;
-            ctx.scene.enter("CommentaryQuery");
+            product.burnTime = time;
+            await ctx.scene.enter("CommentaryQuery");
         } else {
             await ctx.reply("Формат неверен");
         }
@@ -186,5 +185,4 @@ new (class CommentaryQuery extends Scene {
             await ctx.scene.enter("TakeTimeQuery");
         }
     }
-
 })();

@@ -17,6 +17,9 @@ new (class TakeFood extends Scene {
             .resize()
             .extra()
     );
+
+    await ctx.reply()
+
   }
   async onText(ctx) {
     switch (ctx.message.text) {
@@ -28,13 +31,5 @@ new (class TakeFood extends Scene {
         break;
     }
   }
-  async enter(ctx) {
-    await ctx.reply(
-      'Вы зашли в раздел "Взять еду"',
-      Markup.keyboard(["Назад"])
-        .oneTime()
-        .resize()
-        .extra()
-    );
-  }
+
 })();
