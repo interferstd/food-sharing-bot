@@ -8,6 +8,7 @@ class Base {
     this.mongodb.MongoClient(...config).connect((err, db) => {
       if (err !== null) {
         global.Scenes.Controller.emit("Error", err);
+        return;
       }
       global.DataBase = db;
       global.Scenes.Controller.emit("DataBaseConnected");
