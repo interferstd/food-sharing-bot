@@ -22,7 +22,7 @@ new (class GiveFood extends Scene {
     );
     // TODO: поставить нормальный переход
     //await ctx.scene.enter("TakeTimeQuery");
-    await ctx.scene.enter("NameQuery")
+    await ctx.scene.enter("NameQuery");
   }
 })();
 
@@ -78,7 +78,7 @@ new (class PhotoQuery extends Scene {
     );
   }
   async onText(ctx) {
-    const {product} = ctx.session;
+    const { product } = ctx.session;
     switch (ctx.message.text) {
       case "Назад":
         await ctx.scene.enter("NameQuery");
@@ -97,12 +97,12 @@ new (class PhotoQuery extends Scene {
     }
   }
   async onPhoto(ctx) {
-    const {product} = ctx.session; //  Получение продуктов из кеша
+    const { product } = ctx.session; //  Получение продуктов из кеша
     product.authId = ctx.from.id; //  Id пользователя
     product.photos = product.photos || [];
     const file_id = ctx.message.photo.pop().file_id;
     const link = await ctx.telegram.getFileLink(file_id);
-    product.photos.push({"id" : file_id, "url" : link}); //  Получение самой графонисторй фотографии
+    product.photos.push({ id: file_id, url: link }); //  Получение самой графонисторй фотографии
   }
 })();
 
@@ -181,7 +181,7 @@ new (class CommentaryQuery extends Scene {
     );
   }
   async onText(ctx) {
-    const {product} = ctx.session;
+    const { product } = ctx.session;
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
       await ctx.scene.enter("locationQuery");
@@ -197,36 +197,36 @@ new (class locationQuery extends Scene {
     super("locationQuery");
     super.struct = {
       on: [
-          ["text", this.onText],
-          ["location", this.onLocation]
+        ["text", this.onText],
+        ["location", this.onLocation]
       ],
       enter: [[this.enter]]
     };
   }
   async enter(ctx) {
     await ctx.reply(
-        "Установите геометку",
-        Markup.keyboard(["Использовать стандартную", "Назад"])
-            .oneTime()
-            .resize()
-            .extra()
+      "Установите геометку",
+      Markup.keyboard(["Использовать стандартную", "Назад"])
+        .oneTime()
+        .resize()
+        .extra()
     );
   }
   async onLocation(ctx) {
     ctx.session.product.location = ctx.message.location;
     // TODO: Отправить ctx.session.product в БД
-    console.log(ctx.session.product)
+    console.log(ctx.session.product);
     await ctx.scene.enter("Main");
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case ("Использовать стандартную"):
+      case "Использовать стандартную":
         // TODO: обратиться к USER и присвоить ctx.session.product.location локацию изера
         // TODO: Отправить ctx.session.product в БД
-          console.log(ctx.session.product)
-          await ctx.scene.enter("Main");
+        console.log(ctx.session.product);
+        await ctx.scene.enter("Main");
         break;
-      case ("Назад"):
+      case "Назад":
         ctx.session.product.location = {};
         await ctx.scene.enter("CommentaryQuery");
         break;

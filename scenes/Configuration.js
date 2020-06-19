@@ -22,38 +22,38 @@ new (class Configuration extends Scene {
       alerts: null,
       name: null,
       city: null,
-      location: null,
+      location: null
       //TODO: preferences
-    }
+    };
     await ctx.reply(
-        "Настройки",
-        Markup.keyboard(keyboardKeys)
-            .oneTime()
-            .resize()
-            .extra()
+      "Настройки",
+      Markup.keyboard(keyboardKeys)
+        .oneTime()
+        .resize()
+        .extra()
     );
   }
-  async onText(ctx){
+  async onText(ctx) {
     switch (ctx.message.text) {
-      case ("Назад"):
+      case "Назад":
         await ctx.scene.enter("Main");
         break;
-      case ("Радиус"):
+      case "Радиус":
         await ctx.scene.enter("ConfRadius");
         break;
-      case ("Уведомления"):
+      case "Уведомления":
         await ctx.scene.enter("ConfAlerts");
         break;
-      case ("Геолокация"):
+      case "Геолокация":
         await ctx.scene.enter("ConfLocation");
         break;
-      case ("Предпочтения"):
+      case "Предпочтения":
         await ctx.scene.enter("ConfPreference");
         break;
-      case ("Имя"):
+      case "Имя":
         await ctx.scene.enter("ConfName");
         break;
-      case ("Город"):
+      case "Город":
         await ctx.scene.enter("ConfCity");
         break;
     }
@@ -70,23 +70,24 @@ new (class ConfAlerts extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Включить уведомления?",
-        Markup.keyboard([["Включить", "Выключить"], ["Назад"]])
-            .oneTime()
-            .resize()
-            .extra());
+      "Включить уведомления?",
+      Markup.keyboard([["Включить", "Выключить"], ["Назад"]])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case ("Назад"):
+      case "Назад":
         await ctx.scene.enter("Configuration");
         break;
-      case ("Включить"):
+      case "Включить":
         ctx.session.baseConfig.alerts = true;
         await ctx.reply("Уведомления включены!");
         await ctx.scene.enter("Configuration");
         break;
-      case ("Выключить"):
+      case "Выключить":
         ctx.session.baseConfig.alerts = false;
         await ctx.reply("Уведомления выключены!");
         await ctx.scene.enter("Configuration");
@@ -105,30 +106,30 @@ new (class ConfRadius extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Введите радиус в км",
-        Markup.keyboard(["Назад"])
-            .oneTime()
-            .resize()
-            .extra());
+      "Введите радиус в км",
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case ("Назад"):
+      case "Назад":
         await ctx.scene.enter("Configuration");
         break;
       default:
-        if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1){
+        if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1) {
           ctx.session.baseConfig.radius = ctx.message.text;
-          await ctx.reply("Вы успешно обновили радиус!")
+          await ctx.reply("Вы успешно обновили радиус!");
           await ctx.scene.enter("Configuration");
-        }else{
+        } else {
           ctx.reply("Попробуйте еще раз.");
           ctx.scene.reenter();
         }
 
         break;
     }
-
   }
 })();
 
@@ -136,30 +137,32 @@ new (class ConfLocation extends Scene {
   constructor() {
     super("ConfLocation");
     super.struct = {
-      on: [["location", this.onLocation], ["text", this.onText]],
+      on: [
+        ["location", this.onLocation],
+        ["text", this.onText]
+      ],
       enter: [[this.enter]]
     };
   }
   async enter(ctx) {
     await ctx.reply(
-        "Отправьте вашу геолокацию",
-        Markup.keyboard(["Назад"])
-            .oneTime()
-            .resize()
-            .extra());
+      "Отправьте вашу геолокацию",
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onLocation(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig.location = ctx.message.location;
-    console.log(ctx.session.baseConfig)
-    //TODO: пофиксить
-    ctx.base.sendBaseConfig(ctx.session.baseConfig.copy());
-    await ctx.reply("Вы успешно одновили геолокацию!")
+    await ctx.base.sendConfig(ctx.session.baseConfig);
+    await ctx.reply("Вы успешно одновили геолокацию!");
     await ctx.scene.enter("Configuration");
   }
-  async onText(ctx){
-    console.log(ctx.session.baseConfig)
-    if (ctx.message.text === "Назад") ctx.scene.enter("Configuration")
+  async onText(ctx) {
+    console.log(ctx.session.baseConfig);
+    if (ctx.message.text === "Назад") ctx.scene.enter("Configuration");
   }
 })();
 
@@ -173,17 +176,19 @@ new (class ConfCity extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Введите ваш город",
-        Markup.keyboard(["Назад"])
-            .oneTime()
-            .resize()
-            .extra());
+      "Введите ваш город",
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onText(ctx) {
-    if (ctx.message.text === "Назад") {ctx.scene.enter("Configuration")}
-    else{
+    if (ctx.message.text === "Назад") {
+      ctx.scene.enter("Configuration");
+    } else {
       ctx.session.baseConfig.city = ctx.message.text;
-      await ctx.reply("Вы успешно обновили город!")
+      await ctx.reply("Вы успешно обновили город!");
       await ctx.scene.enter("Configuration");
     }
   }
@@ -199,17 +204,19 @@ new (class ConfName extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Введите Ваше имя",
-        Markup.keyboard(["Назад"])
-            .oneTime()
-            .resize()
-            .extra());
+      "Введите Ваше имя",
+      Markup.keyboard(["Назад"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onText(ctx) {
-    if (ctx.message.text === "Назад") {ctx.scene.enter("Configuration")}
-    else{
+    if (ctx.message.text === "Назад") {
+      ctx.scene.enter("Configuration");
+    } else {
       ctx.session.baseConfig.name = ctx.message.text;
-      await ctx.reply("Вы успешно обновили имя!")
+      await ctx.reply("Вы успешно обновили имя!");
       await ctx.scene.enter("Configuration");
     }
   }

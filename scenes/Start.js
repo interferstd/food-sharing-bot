@@ -13,14 +13,14 @@ new (class Start extends Scene {
       alerts: true,
       name: null,
       city: null,
-      location: null,
+      location: null
       //TODO: preferences
-    }
+    };
     await ctx.reply(
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
     );
     //TODO: redirect на main
-    await ctx.scene.enter("Main")
+    await ctx.scene.enter("Main");
     //await ctx.scene.enter("getStartUserRadius")
   }
 })();
@@ -37,11 +37,10 @@ new (class getStartUserRadius extends Scene {
     await ctx.reply("Введите радиус");
   }
   async onText(ctx) {
-    if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1){
+    if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1) {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
     }
-
   }
 })();
 
@@ -76,11 +75,7 @@ new (class getStartUserLocation extends Scene {
   async onLocation(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig.location = ctx.message.location;
-
-    console.log(ctx.session.baseConfig)
-
-    //TODO: пофиксить
-    ctx.base.sendBaseConfig(ctx.session.baseConfig.copy());
+    await ctx.base.sendConfig(ctx.session.baseConfig);
     await ctx.scene.enter("Main");
   }
 })();

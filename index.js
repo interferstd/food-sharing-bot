@@ -18,8 +18,10 @@ bot.use(
 
 bot.start(ctx => ctx.scene.enter("Start"));
 
-global.Scenes.Controller = {
+global.Controller.struct = {
   on: [
+    // TODO: vk навешивать сюда
+    // TODO: размещение постова(можно вынести в любой другой оно дополняется ?также можно сделать удаление)
     ["Error", console.log],
     [
       "DataBaseConnected",

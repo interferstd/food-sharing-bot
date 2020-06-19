@@ -2,33 +2,36 @@ class Base {
   constructor(config) {
     this.mongodb = require("mongodb");
     this.connect(config);
+    // TODO: установить колеуции (надо помнить что эта хрень async)
     //this. = db.collection('');
   }
   connect(config) {
     this.mongodb.MongoClient(...config).connect((err, db) => {
       if (err !== null) {
-        global.Scenes.Controller.emit("Error", err);
+        global.Controller.emit("Error", err);
         return;
       }
       global.DataBase = db;
-      global.Scenes.Controller.emit("DataBaseConnected");
+      global.Controller.emit("DataBaseConnected");
     });
   }
   static get(config) {
     return new Base(config);
   }
-  setProduct(product){
-    //TODO: запилить в БД объект вида : {
-    //       _id: undefined, // ID продукта
-    //       authId: null, // это ID пользователя, отправившего продукт
-    //       name: null, // название продукта
-    //       photos: [], // массив ссылок на фотографии
-    //       category: null, // категория
-    //       burnTime: null,
-    //       from: null
-    //     }
+  setProduct(product) {
+    /*TODO: запилить в БД объект вида:
+         {
+           _id: undefined, // ID продукта
+           authId: null, // это ID пользователя, отправившего продукт
+           name: null, // название продукта
+           photos: [], // массив ссылок на фотографии
+           category: null, // категория
+           burnTime: null,
+           from: null
+         }
+    */
   }
-  getProduct(id){
+  getProduct(id) {
     //TODO: запилить получение продукта по id;
   }
   middleware() {
@@ -38,7 +41,7 @@ class Base {
     };
   }
   sendProduct(obj) {}
-  sendConfig(obj) {
+  async sendConfig(obj) {
     console.log(obj);
     /*
     obj = {

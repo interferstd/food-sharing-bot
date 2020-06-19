@@ -17,7 +17,7 @@ new (class TakeFood extends Scene {
         .extra()
     );
 
-    await ctx.reply("123")
+    await ctx.reply("123");
   }
   async onText(ctx) {
     switch (ctx.message.text) {
@@ -29,5 +29,4 @@ new (class TakeFood extends Scene {
         break;
     }
   }
-
 })();

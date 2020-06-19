@@ -1,27 +1,12 @@
 const Telegraf = require("telegraf");
 const { Stage, session, Markup, Extra } = Telegraf;
 const SceneBase = require("telegraf/scenes/base");
+const Emitter = require("events").EventEmitter;
 
 // Если нам понадобиться разбыть сцены по группам
 class Scenes {
   constructor() {
-    const Emitter = require("events").EventEmitter;
     this.scenesMap = new Map();
-    this.ControllerEmitter = new Emitter();
-  }
-  set Controller(struct) {
-    for (var name in struct) {
-      for (var args of struct[name]) {
-        switch (name) {
-          case "on":
-            this.ControllerEmitter.on(...args);
-            break;
-        }
-      }
-    }
-  }
-  get Controller() {
-    return this.ControllerEmitter;
   }
   get stage() {
     return new Stage(this.scenes);
@@ -37,8 +22,22 @@ class Scenes {
   }
 }
 
-// Единыжды создаст контроллер сцен
-if (global.Scenes === undefined) global.Scenes = new Scenes();
+class Controller extends Emitter {
+  constructor() {
+    super();
+  }
+  set struct(struct) {
+    for (var name in struct) {
+      for (var args of struct[name]) {
+        switch (name) {
+          case "on":
+            this.on(...args);
+            break;
+        }
+      }
+    }
+  }
+}
 
 class Scene {
   constructor(name) {
@@ -71,5 +70,9 @@ class Scene {
     }
   }
 }
+
+// Единыжды создаст контроллер и сцены (восстановит в случае чего)
+if (global.Scenes === undefined) global.Scenes = new Scenes();
+if (global.Controller === undefined) global.Controller = new Controller();
 
 module.exports = { Scene, Scenes, Stage, session, Markup, Extra, Telegraf };
