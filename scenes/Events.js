@@ -31,10 +31,25 @@ async function getVkEvent(post) {
   console.log(post);
 }
 
+async function checkVkPost(post) {
+  const details = { _id: post._id };
+  const res = await global.DataBaseController.get("vkPosts", details);
+  console.log(details, res);
+  if (res.length === 0) {
+    const res = await global.DataBaseController.set("vkPosts", post);
+    global.Controller.emit("newVkPost", post);
+  }
+}
+async function checkVkPosts(posts) {
+  console.log(posts);
+  posts.map(checkVkPost);
+}
+
 global.Controller.struct = {
   on: [
     ["Error", console.log],
     ["newProduct", sendForAll],
+    ["checkVkPosts", checkVkPosts],
     ["newVkPost", getVkEvent]
   ]
 };

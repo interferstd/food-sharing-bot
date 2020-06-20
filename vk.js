@@ -36,32 +36,32 @@ class Vk {
             }
           return ret;
         }
-        const posts = data.items
-          .map(item => {
-            var location = undefined;
-            const post = {
-              _id: item.id,
-              text: item.text,
-              att: item.attachments
-                .map(photo => photo.photo)
-                .map(item => {
-                  const photo = {
-                    user_id: item.user_id,
-                    key: item.access_key,
-                    photo: getPosto(item)
+        const posts = data.items.map(item => {
+          var location = undefined;
+          const post = {
+            _id: item.id,
+            url: "https://vk.com/id" + item.from_id,
+            text: item.text,
+            att: item.attachments
+              .map(photo => photo.photo)
+              .map(item => {
+                const photo = {
+                  user_id: item.user_id,
+                  key: item.access_key,
+                  photo: getPosto(item)
+                };
+                if (!location && item.lat && item.long)
+                  location = {
+                    latitude: item.lat,
+                    longitude: item.long
                   };
-                  if (!location && item.lat && item.long)
-                    location = {
-                      latitude: item.lat,
-                      longitude: item.long
-                    };
-                  return photo;
-                })
-            };
-            post.location = location;
-            return post;
-          })
-          .map(post => global.Controller.emit("newVkPost", post));
+                return photo;
+              })
+          };
+          post.location = location;
+          return post;
+        });
+        global.Controller.emit("checkVkPosts", posts);
       }
     );
   }
