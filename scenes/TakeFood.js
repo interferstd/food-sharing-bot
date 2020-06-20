@@ -14,7 +14,6 @@ new (class TakeFood extends Scene {
       Markup.keyboard(["Назад"])
         .oneTime()
         .resize()
-        .extra()
     );
 
     await ctx.reply("123");
