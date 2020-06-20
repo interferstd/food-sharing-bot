@@ -29,9 +29,8 @@ async function sendForAll(product) {
 
 global.Controller.struct = {
   on: [
-    // TODO: vk навешивать сюда
-    // TODO: размещение постова(можно вынести в любой другой оно дополняется ?также можно сделать удаление)
     ["Error", console.log],
-    ["newProduct", sendForAll]
+    ["newProduct", sendForAll],
+    ["newVkPost", console.log()]
   ]
 };
