@@ -231,32 +231,41 @@ new (class ConfPreference extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Выбор предпочтений",
-        Markup.keyboard([].concat([["Сохранить"]],Object.entries(ctx.session.baseConfig.preferences)
-            .map(it => [it[0] + (it[1] ? " ✅" : " ❌")])))
-            .oneTime()
-            .resize()
-            .extra()
+      "Выбор предпочтений",
+      Markup.keyboard(
+        [].concat(
+          [["Сохранить"]],
+          Object.entries(ctx.session.baseConfig.preferences).map(it => [
+            it[0] + (it[1] ? " ✅" : " ❌")
+          ])
+        )
+      )
+        .oneTime()
+        .resize()
+        .extra()
     );
   }
   async onText(ctx) {
     // TODO: UPDATE USER object
     const prefs = ctx.session.baseConfig.preferences;
-    const inp = ctx.message.text.slice(0,-2);
-    if (inp in prefs){
+    const inp = ctx.message.text.slice(0, -2);
+    if (inp in prefs) {
       prefs[inp] = !prefs[inp]; // TODO: set USER field "preferences";
       await ctx.reply(
-          inp + " set to " + prefs[inp],
-          Markup.keyboard([].concat([["Сохранить"]],Object.entries(prefs)
-              .map(it => [it[0] + (it[1] ? " ✅" : " ❌")])))
-              .oneTime()
-              .resize()
-              .extra()
+        inp + " set to " + prefs[inp],
+        Markup.keyboard(
+          [].concat(
+            [["Сохранить"]],
+            Object.entries(prefs).map(it => [it[0] + (it[1] ? " ✅" : " ❌")])
           )
-    } else if (ctx.message.text === "Сохранить"){
+        )
+          .oneTime()
+          .resize()
+          .extra()
+      );
+    } else if (ctx.message.text === "Сохранить") {
       await ctx.scene.enter("Configuration");
       await ctx.reply("Вы успешно обновили предпочтения!");
     }
   }
 })();
-

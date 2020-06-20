@@ -9,7 +9,7 @@ new (class Start extends Scene {
   }
 
   async enter(ctx) {
-    if(await ctx.base.get("config", {_id:ctx.from.id}).length!==0){
+    if ((await ctx.base.get("config", { _id: ctx.from.id }).length) !== 0) {
       await ctx.scene.enter("Main");
       return;
     }
@@ -21,18 +21,18 @@ new (class Start extends Scene {
       city: null,
       location: null,
       preferences: {
-        "Мясо": true,
+        Мясо: true,
         "Фрукты и ягоды": true,
-        "Овощи": true,
+        Овощи: true,
         "Молочные продукты": true,
-        "Лекарства": true,
-        "Сладкое": true,
-        "Крупы": true,
-        "Замороженное": true,
-        "Напитки": true,
-        "Детское": true,
-        "Выпечка": true,
-        "Другое": true
+        Лекарства: true,
+        Сладкое: true,
+        Крупы: true,
+        Замороженное: true,
+        Напитки: true,
+        Детское: true,
+        Выпечка: true,
+        Другое: true
       }
     };
     await ctx.reply(
@@ -40,7 +40,7 @@ new (class Start extends Scene {
     );
     //TODO: redirect на main
     // await ctx.scene.enter("Main");
-    await ctx.scene.enter("getStartUserRadius")
+    await ctx.scene.enter("getStartUserRadius");
   }
 })();
 
@@ -87,7 +87,10 @@ new (class getStartUserLocation extends Scene {
   constructor() {
     super("getStartUserLocation");
     super.struct = {
-      on: [["location", this.onLocation], ["text", this.onText]],
+      on: [
+        ["location", this.onLocation],
+        ["text", this.onText]
+      ],
       enter: [[this.enter]]
     };
   }
@@ -100,7 +103,8 @@ new (class getStartUserLocation extends Scene {
     }));
   }
   async onText(ctx) {
-    if (ctx.message.text === "Пропустить") await ctx.scene.enter("getStartUserName");
+    if (ctx.message.text === "Пропустить")
+      await ctx.scene.enter("getStartUserName");
   }
   async onLocation(ctx) {
     ctx.session.baseConfig.location = ctx.message.location;
@@ -118,10 +122,9 @@ new (class getStartUserName extends Scene {
   async enter(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig._id = ctx.from.id;
-    console.log(ctx.session.baseConfig)
-    await ctx.base.remove("config", {_id:ctx.from.id})
+    console.log(ctx.session.baseConfig);
+    await ctx.base.remove("config", { _id: ctx.from.id });
     await ctx.base.set("config", ctx.session.baseConfig);
     await ctx.scene.enter("Main");
   }
 })();
-

@@ -26,7 +26,7 @@ class Base {
     var collection = global.DataBase.collection(name);
     try {
       const resp = await collection.insertOne(note);
-      return resp.ops[0]
+      return resp.ops[0];
     } catch (e) {
       global.Controller.emit("Error", e);
     }
@@ -44,7 +44,7 @@ class Base {
     var collection = global.DataBase.collection(name);
     try {
       const resp = await collection.updateMany(details, { $set: toUpdate });
-      return resp.ops
+      return resp.ops;
     } catch (e) {
       global.Controller.emit("Error", e);
     }
@@ -53,7 +53,7 @@ class Base {
     var collection = global.DataBase.collection(name);
     try {
       const resp = await collection.remove(details);
-      return resp.ops
+      return resp.ops;
     } catch (e) {
       global.Controller.emit("Error", e);
     }
