@@ -7,20 +7,20 @@ const keyboardKeys = [
   ["Сохранить", "Назад"]
 ];
 
-new (class StartConfiguration extends Scene{
+new (class StartConfiguration extends Scene {
   constructor() {
     super("StartConfiguration");
     super.struct = {
       enter: [[this.enter]]
     };
   }
-  async enter(ctx){
+  async enter(ctx) {
     const resp = await ctx.base.get("config", { _id: ctx.from.id });
     ctx.session.baseConfig = resp[0];
     console.log(resp);
     await ctx.scene.enter("Configuration");
   }
-})
+})();
 
 new (class Configuration extends Scene {
   constructor() {
@@ -45,7 +45,11 @@ new (class Configuration extends Scene {
         await ctx.scene.enter("Main");
         break;
       case "Сохранить":
-        await ctx.base.update("config", {_id: ctx.from.id}, ctx.session.baseConfig);
+        await ctx.base.update(
+          "config",
+          { _id: ctx.from.id },
+          ctx.session.baseConfig
+        );
         console.log(ctx.session.baseConfig);
         await ctx.scene.enter("Main");
         break;
@@ -166,7 +170,6 @@ new (class ConfLocation extends Scene {
   }
   async onLocation(ctx) {
     ctx.session.baseConfig.location = ctx.message.location;
-    await ctx.base.sendConfig(ctx.session.baseConfig);
     await ctx.reply("Вы успешно одновили геолокацию!");
     await ctx.scene.enter("Configuration");
   }
@@ -216,7 +219,6 @@ new (class ConfName extends Scene {
     ctx.reply("Имя обновлено");
     await ctx.scene.enter("Configuration");
   }
-
 })();
 
 new (class ConfPreference extends Scene {
