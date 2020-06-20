@@ -199,7 +199,6 @@ new (class CommentaryQuery extends Scene {
       product.commentary = ctx.message.text;
       await ctx.scene.enter("locationQuery");
     }
-
   }
 })();
 
