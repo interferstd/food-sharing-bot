@@ -47,12 +47,17 @@ class Vk {
               att: item.attachments
                 .map(photo => photo.photo)
                 .map(item => {
-                  return {
+                  const photo = {
                     user_id: item.user_id,
-                    location: { latitude: item.lat, longitude: item.long },
                     key: item.access_key,
                     photo: getPosto(item)
                   };
+                  if (!post.location && item.lat && item.long)
+                    post.location = {
+                      latitude: item.lat,
+                      longitude: item.long
+                    };
+                  return photo;
                 })
             };
           })
