@@ -4,8 +4,23 @@ const keyboardKeys = [
   ["Радиус", "Уведомления"],
   ["Имя", "Город"],
   ["Геолокация", "Предпочтения"],
-  ["Назад"]
+  ["Сохранить", "Назад"]
 ];
+
+new (class StartConfiguration extends Scene{
+  constructor() {
+    super("StartConfiguration");
+    super.struct = {
+      enter: [[this.enter]]
+    };
+  }
+  async enter(ctx){
+    const resp = await ctx.base.get("config", { _id: ctx.from.id });
+    ctx.session.baseConfig = resp[0];
+    console.log(resp);
+    await ctx.scene.enter("Configuration");
+  }
+})
 
 new (class Configuration extends Scene {
   constructor() {
@@ -16,8 +31,6 @@ new (class Configuration extends Scene {
     };
   }
   async enter(ctx) {
-    //TODO: Ниже объект-заглушка, чтобы сейчас все работало. По сути, она не нужна.
-
     await ctx.reply(
       "Настройки",
       Markup.keyboard(keyboardKeys)
@@ -29,6 +42,11 @@ new (class Configuration extends Scene {
   async onText(ctx) {
     switch (ctx.message.text) {
       case "Назад":
+        await ctx.scene.enter("Main");
+        break;
+      case "Сохранить":
+        await ctx.base.update("config", {_id: ctx.from.id}, ctx.session.baseConfig);
+        console.log(ctx.session.baseConfig);
         await ctx.scene.enter("Main");
         break;
       case "Радиус":
@@ -71,19 +89,16 @@ new (class ConfAlerts extends Scene {
     );
   }
   async onText(ctx) {
-    // TODO: UPDATE USER object
     switch (ctx.message.text) {
       case "Назад":
         await ctx.scene.enter("Configuration");
         break;
       case "Включить":
-        // TODO: set USER field "alerts" to true;
         ctx.session.baseConfig.alerts = true;
         await ctx.reply("Уведомления включены!");
         await ctx.scene.enter("Configuration");
         break;
       case "Выключить":
-        // TODO: set USER field "alerts" to false;
         ctx.session.baseConfig.alerts = false;
         await ctx.reply("Уведомления выключены!");
         await ctx.scene.enter("Configuration");
@@ -116,8 +131,7 @@ new (class ConfRadius extends Scene {
         break;
       default:
         if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1) {
-          // TODO: UPDATE USER object
-          ctx.session.baseConfig.radius = ctx.message.text; // TODO: set USER field "radius";
+          ctx.session.baseConfig.radius = ctx.message.text;
           await ctx.reply("Вы успешно обновили радиус!");
           await ctx.scene.enter("Configuration");
         } else {
@@ -151,8 +165,7 @@ new (class ConfLocation extends Scene {
     );
   }
   async onLocation(ctx) {
-    // TODO: UPDATE USER object
-    ctx.session.baseConfig.location = ctx.message.location; // TODO: set USER field "location";
+    ctx.session.baseConfig.location = ctx.message.location;
     await ctx.base.sendConfig(ctx.session.baseConfig);
     await ctx.reply("Вы успешно одновили геолокацию!");
     await ctx.scene.enter("Configuration");
@@ -184,8 +197,7 @@ new (class ConfCity extends Scene {
     if (ctx.message.text === "Назад") {
       ctx.scene.enter("Configuration");
     } else {
-      // TODO: UPDATE USER object
-      ctx.session.baseConfig.city = ctx.message.text; // TODO: set USER field "city";
+      ctx.session.baseConfig.city = ctx.message.text;
       await ctx.reply("Вы успешно обновили город!");
       await ctx.scene.enter("Configuration");
     }
@@ -196,29 +208,15 @@ new (class ConfName extends Scene {
   constructor() {
     super("ConfName");
     super.struct = {
-      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
   async enter(ctx) {
-    await ctx.reply(
-      "Введите Ваше имя",
-      Markup.keyboard(["Назад"])
-        .oneTime()
-        .resize()
-        .extra()
-    );
+    ctx.session.baseConfig.name = ctx.from.first_name;
+    ctx.reply("Имя обновлено");
+    await ctx.scene.enter("Configuration");
   }
-  async onText(ctx) {
-    if (ctx.message.text === "Назад") {
-      ctx.scene.enter("Configuration");
-    } else {
-      // TODO: UPDATE USER object
-      ctx.session.baseConfig.name = ctx.message.text; // TODO: set USER field "name";
-      await ctx.reply("Вы успешно обновили имя!");
-      await ctx.scene.enter("Configuration");
-    }
-  }
+
 })();
 
 new (class ConfPreference extends Scene {
@@ -246,11 +244,10 @@ new (class ConfPreference extends Scene {
     );
   }
   async onText(ctx) {
-    // TODO: UPDATE USER object
     const prefs = ctx.session.baseConfig.preferences;
     const inp = ctx.message.text.slice(0, -2);
     if (inp in prefs) {
-      prefs[inp] = !prefs[inp]; // TODO: set USER field "preferences";
+      prefs[inp] = !prefs[inp];
       await ctx.reply(
         inp + " set to " + prefs[inp],
         Markup.keyboard(

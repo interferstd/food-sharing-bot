@@ -44,7 +44,7 @@ new (class Main extends Scene {
   async onText(ctx) {
     switch (ctx.message.text) {
       case "Конфигурация":
-        await ctx.scene.enter("Configuration");
+        await ctx.scene.enter("StartConfiguration");
         break;
       case "Отдать еду":
         await ctx.scene.enter("GiveFood");

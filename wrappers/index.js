@@ -1,6 +1,5 @@
 const { mongo } = require("../config.json");
 const user = require("./user").get();
-const vk = require("../vk").get();
 const base = require("./base").get(mongo);
 
 module.exports = (ctx, next) => {
