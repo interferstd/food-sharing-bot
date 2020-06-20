@@ -1,4 +1,24 @@
 require("./Scenes");
+const dicts = require('../dicts.json');
+const Morpher = require('morpher-ru');
+let morpher = new Morpher();
+
+function foodParser(text) {
+  var obj = {};
+  text.toLowerCase().split(' ').forEach(async elm=> {
+    let word = await morpher.declension(elm);
+    for (var key in dicts){
+      if(dicts[key].includes(word)){
+        if(obj[key].length){
+         obj[key].push(word);
+        } else {
+          obj[key] = [word];
+        }
+      }
+    }
+  })
+  return obj;
+}
 
 function distance(lat1, lon1, lat2, lon2) {
   if (lat1 === lat2 && lon1 === lon2) {
@@ -52,4 +72,4 @@ global.Controller.struct = {
     ["checkVkPosts", checkVkPosts],
     ["newVkPost", getVkEvent]
   ]
-};
+}
