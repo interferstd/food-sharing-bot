@@ -34,6 +34,9 @@ class Base {
   getProduct(id) {
     //TODO: запилить получение продукта по id;
   }
+  updateConfig(user_id, field, value){
+    //TODO: запилить функуию, которая позволит апдейтить конфиг юзера. Подумай сам, как лучше сделать.
+  }
   middleware() {
     return (ctx, next) => {
       ctx.base = this;

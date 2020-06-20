@@ -47,7 +47,7 @@ new (class NameQuery extends Scene {
     switch (ctx.message.text) {
       case "Назад":
         ctx.session.product.photos = null;
-        await ctx.scene.enter("GiveFood");
+        await ctx.scene.enter("Main");
         break;
       default:
         ctx.session.product.name = ctx.message.text;
