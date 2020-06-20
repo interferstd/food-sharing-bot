@@ -27,22 +27,20 @@ class Vk {
         extended: 1
       },
       function(data) {
-        var ret = "",
-          max = 0;
+        var ret = undefined;
         function getPosto(item) {
           for (var photo in item)
             if (/(\w)_(\d\d*)/.test(photo)) {
-              const size = +photo.match(/(\w)_(\d\d*)/)[2];
-              if (size > max) {
-                max = size;
-                ret = item[photo];
-              }
+              ret = item[photo];
+              break;
             }
           return ret;
         }
-        const post = data.items
+        const posts = data.items
           .map(item => {
-            return {
+            var location = undefined;
+            const post = {
+              _id: item.id,
               text: item.text,
               att: item.attachments
                 .map(photo => photo.photo)
@@ -52,14 +50,16 @@ class Vk {
                     key: item.access_key,
                     photo: getPosto(item)
                   };
-                  if (!post.location && item.lat && item.long)
-                    post.location = {
+                  if (!location && item.lat && item.long)
+                    location = {
                       latitude: item.lat,
                       longitude: item.long
                     };
                   return photo;
                 })
             };
+            post.location = location;
+            return post;
           })
           .map(post => global.Controller.emit("newVkPost", post));
       }
