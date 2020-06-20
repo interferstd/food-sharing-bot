@@ -13,9 +13,6 @@ module.exports = (ctx, next) => {
     base.middleware()(ctx, () => {
       doNext = true;
     });
-    vk.middleware()(ctx, () => {
-      doNext = true;
-    });
   }
   if (doNext) next();
 };

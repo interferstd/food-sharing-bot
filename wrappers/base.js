@@ -2,8 +2,6 @@ class Base {
   constructor(config) {
     this.mongodb = require("mongodb");
     this.connect(config);
-    // TODO: установить колеуции (надо помнить что эта хрень async)
-    //this. = db.collection('');
   }
   connect(config) {
     this.mongodb.MongoClient(...config).connect((err, db) => {
@@ -18,44 +16,47 @@ class Base {
   static get(config) {
     return new Base(config);
   }
-  setProduct(product) {
-    /*TODO: запилить в БД объект вида:
-         {
-           _id: undefined, // ID продукта
-           authId: null, // это ID пользователя, отправившего продукт
-           name: null, // название продукта
-           photos: [], // массив ссылок на фотографии
-           category: null, // категория
-           burnTime: null,
-           from: null
-         }
-    */
-  }
-  getProduct(id) {
-    //TODO: запилить получение продукта по id;
-  }
-  updateConfig(user_id, field, value){
-    //TODO: запилить функуию, которая позволит апдейтить конфиг юзера. Подумай сам, как лучше сделать.
-  }
   middleware() {
     return (ctx, next) => {
       ctx.base = this;
       next();
     };
   }
-  sendProduct(obj) {}
-  async sendConfig(obj) {
-    console.log(obj);
-    /*
-    obj = {
-      name: string,
-      city: string,
-      location: {
-        "latitude": 55.641149,
-        "longitude": 37.328438
-      }
+  set(name, note) {
+    var collection = db.collection(name);
+    try {
+      const resp = collection.insertOne(note);
+      console.log(resp);
+    } catch (e) {
+      global.Controller.emit("Error", e);
     }
-    */
+  }
+  get(name, details) {
+    var collection = db.collection(name);
+    try {
+      const resp = collection.find(details);
+      console.log(resp);
+    } catch (e) {
+      global.Controller.emit("Error", e);
+    }
+  }
+  update(name, details, toUpdate) {
+    var collection = db.collection(name);
+    try {
+      const resp = collection.updateMany(details, { $set: toUpdate });
+      console.log(resp);
+    } catch (e) {
+      global.Controller.emit("Error", e);
+    }
+  }
+  remove(name, details) {
+    var collection = db.collection(name);
+    try {
+      const resp = collection.remove(details);
+      console.log(resp);
+    } catch (e) {
+      global.Controller.emit("Error", e);
+    }
   }
 }
 
