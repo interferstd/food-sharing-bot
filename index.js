@@ -6,8 +6,8 @@ const {
   ScenesController
 } = require("./scenes");
 
-const { token } = require("./config.json");
-global.bot = new Telegraf(token);
+const { telegram } = require("./config.json");
+global.bot = new Telegraf(telegram);
 
 global.bot.use(
   session(),
@@ -17,7 +17,6 @@ global.bot.use(
 );
 
 global.bot.start(ctx => ctx.scene.enter("Start"));
-
 
 global.Controller.on("DataBaseConnected", async () => {
   await global.bot.launch();
