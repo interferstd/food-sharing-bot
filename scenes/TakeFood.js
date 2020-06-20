@@ -25,10 +25,11 @@ function generateMessage(obj) {
   return `${obj.name?obj.name+"\n":''}`
       // todo: добавить расстояние до пользователя как часть объекта
       +`${obj.distance?obj.distance+" км до места\n":''}`
-      +`${obj.city?"Город: "+obj.city+'\n':''}`
+      +`${obj.city?"Город: "+obj.city+'🏢\n':''}`
       +`${obj.burnTime?"Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
       +`${obj.commentary?obj.commentary+"\n":''}`
       +`${obj.category.length?obj.category.map(elm=>elm+" ")+"\n":''}`
+      +`${obj.profileLink?`Связь: ${obj.profileLink}`:"Контактов нет"}`
 }
 
 new (class TakeFood extends Scene {
@@ -51,7 +52,8 @@ new (class TakeFood extends Scene {
     const lots = await ctx.base.get("product");
     const userLocation = user[0].location;
 
-    const trueLots = lots.filter(function(item) {
+    const trueLots = lots.filter( async function(item) {
+      item.profileLink = '@' + (await global.bot.telegram.getChat(item.authId)).username;
       if ((item.category.map(cat => (cat in user[0].preferences && user[0].preferences[cat] === true)).includes(true))
           && item.location.latitude && item.location.longitude)
         if (
@@ -65,12 +67,14 @@ new (class TakeFood extends Scene {
           return item;
     });
     trueLots.map(async lot => {
+      console.log(lot);
       await ctx.telegram.sendMediaGroup(
         ctx.from.id,
         lot.photos.map(function(item, index) {
-          return (index === 0) ? { type: "photo", media: item.id, caption: `Название: ${lot.name}\nОписание: ${lot.commentary}`} : { type: "photo", media: item.id }
+          return { type: "photo", media: item.id }
         })
       );
+      await ctx.reply(generateMessage(lot))
     });
   }
   async onText(ctx) {
