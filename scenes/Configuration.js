@@ -1,4 +1,4 @@
-const { Scene, Markup } = require("./Scenes");
+const { Scene, Markup, Extra } = require("./Scenes");
 
 const keyboardKeys = [
   ["Радиус", "Уведомления"],
@@ -162,15 +162,18 @@ new (class ConfLocation extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Отправьте вашу геолокацию",
-      Markup.keyboard(["Назад"])
-        .oneTime()
-        .resize()
-        .extra()
+      Extra.markup(markup => {
+        return markup
+          .oneTime()
+          .resize()
+          .keyboard([markup.locationRequestButton("Отправить"), "Назад"]);
+      })
     );
   }
   async onLocation(ctx) {
     ctx.session.baseConfig.location = ctx.message.location;
     await ctx.reply("Вы успешно одновили геолокацию!");
+    console.log(ctx.session.baseConfig);
     await ctx.scene.enter("Configuration");
   }
   async onText(ctx) {
