@@ -16,6 +16,7 @@ bot.use(
   global.Scenes.stage.middleware()
 );
 
+// TODO: если пользователь уже регался, то пусть в мэйн пиздошит, если нет, то в старт
 bot.start(ctx => ctx.scene.enter("Start"));
 
 global.Controller.struct = {
