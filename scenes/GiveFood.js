@@ -141,20 +141,18 @@ new (class CategoryQuery extends Scene {
     );
   }
   async onText(ctx) {
-    let {category} = ctx.session.product;
     if ([].concat(...keyboardKeys.slice(0, -2)).includes(ctx.message.text)) {
-      //todo: починить
-      if(category.includes()){
-        category = category.filter(elm=>elm!==ctx.message.text);
+      if(ctx.session.product.category.includes(ctx.message.text)){
+        ctx.session.product.category = ctx.session.product.category.filter(elm=>elm!==ctx.message.text);
         ctx.reply("Катаегория удалена")
-        console.log(category)
+        console.log(ctx.session.product.category)
       } else {
-        category.push(ctx.message.text);
+        ctx.session.product.category.push(ctx.message.text);
         ctx.reply("Категория добавлена")
-        console.log(category)
+        console.log(ctx.session.product.category)
       }
     } else if (ctx.message.text === "Назад↩") {
-      category = [];
+      ctx.session.product.category = [];
       await ctx.scene.enter("PhotoQuery");
     } else if(ctx.message.text==="Отправить✉"){
 
