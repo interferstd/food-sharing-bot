@@ -21,7 +21,11 @@ function distance(lat1, lon1, lat2, lon2) {
   }
 }
 
-async function sendForAll(product) {}
+async function sendForAll(product) {
+  const users = global.DataBaseController.get("config");
+  const idArray = users.map(elm=>elm._id);
+  idArray.map(async id => await global.bot.telegram.sendMessage(id, "123"))
+}
 
 global.Controller.struct = {
   on: [

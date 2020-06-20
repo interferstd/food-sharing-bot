@@ -69,7 +69,7 @@ new (class PhotoQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Загрузите от 1 до 10 фотографий продукта🖼",
-      Markup.keyboard(["Загрузить💿", "Назад↩"])
+      Markup.keyboard(["Загрузить💿", "Назад↩", "Пропустить🔜"])
         .oneTime()
         .resize()
         .extra()
@@ -92,6 +92,8 @@ new (class PhotoQuery extends Scene {
           await ctx.scene.reenter();
         }
         break;
+      case "Пропустить🔜":
+        await ctx.scene.enter("CategoryQuery")
     }
   }
   async onPhoto(ctx) {
@@ -149,7 +151,7 @@ new (class TakeTimeQuery extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply("В течение скольки часов забрать еду?⏰");
+    await ctx.reply("В течение скольки часов забрать еду?⏰", Markup.keyboard("Пропустить🔜"));
   }
   async onText(ctx) {
     if (Number(ctx.message.text) > 0) {
@@ -157,6 +159,9 @@ new (class TakeTimeQuery extends Scene {
       time.setHours(time.getHours() + ctx.message.text);
       ctx.session.product.burnTime = time;
       ctx.scene.enter("CommentaryQuery");
+    } else if(ctx.message.text==="Пропустить🔜") {
+      await ctx.reply("Выставлено стандартное время: 48 часов")
+      await ctx.scene.enter("CommentaryQuery")
     } else {
       await ctx.reply("Формат неверен😞");
     }
@@ -174,7 +179,7 @@ new (class CommentaryQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Введите комментарий📃",
-      Markup.keyboard(["Назад↩"])
+      Markup.keyboard(["Пропустить🔜", "Назад↩"])
         .oneTime()
         .resize()
         .extra()
@@ -182,13 +187,19 @@ new (class CommentaryQuery extends Scene {
   }
   async onText(ctx) {
     const { product } = ctx.session;
+    switch (ctx.message.text) {
+      case "Назад↩":
+        product.commentary = null;
+        await ctx.scene.enter("TakeTimeQuery");
+        break;
+      case "Пропустить🔜":
+    //    TODO: ДОДЕЛАТЬ
+    }
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
       await ctx.scene.enter("locationQuery");
-    } else if (ctx.message.text === "Назад↩") {
-      product.commentary = null;
-      await ctx.scene.enter("TakeTimeQuery");
     }
+
   }
 })();
 

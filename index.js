@@ -7,18 +7,19 @@ const {
 } = require("./scenes");
 
 const { token } = require("./config.json");
-const bot = new Telegraf(token);
+global.bot = new Telegraf(token);
 
-bot.use(
+global.bot.use(
   session(),
   require("./wrappers"),
   // Telegraf.log(),
   global.Scenes.stage.middleware()
 );
 
-bot.start(ctx => ctx.scene.enter("Start"));
+global.bot.start(ctx => ctx.scene.enter("Start"));
+
 
 global.Controller.on("DataBaseConnected", async () => {
-  await bot.launch();
+  await global.bot.launch();
   console.log("Listening...");
 });
