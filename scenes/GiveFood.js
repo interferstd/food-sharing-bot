@@ -16,7 +16,8 @@ new (class GiveFood extends Scene {
       category: null,
       burnTime: null,
       location: {},
-      isReserved: false
+      isReserved: false,
+      city: null
     };
     await ctx.reply(
       'Тут можно добавить продукт🍏'
@@ -233,6 +234,7 @@ new (class locationQuery extends Scene {
       case "Использовать стандартную🌐":
         const user = await ctx.base.get("config", {_id: ctx.from.id});
         ctx.session.product.location = user[0].location;
+        ctx.session.product.city = user[0].city;
         const newProduct = await ctx.base.set("product", ctx.session.product);
         console.log(newProduct);
         global.Controller.emit("newProduct", newProduct);
