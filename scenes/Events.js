@@ -5,8 +5,8 @@ let morpher = new Morpher();
 
 function foodParser(text) {
   var obj = {};
-  text = text.split(' ').forEach(async elm=> {
-    let word = await morpher.declension(elm.toLowerCase());
+  text.toLowerCase().split(' ').forEach(async elm=> {
+    let word = await morpher.declension(elm);
     for (var key in dicts){
       if(dicts[key].includes(word)){
         if(obj[key].length){
