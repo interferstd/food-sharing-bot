@@ -11,6 +11,27 @@ new (class Main extends Scene {
   }
 
   async enter(ctx) {
+    ctx.session.baseConfig = {
+      radius: null,
+      alerts: null,
+      name: null,
+      city: null,
+      location: null,
+      preferences: {
+        "Мясо": true,
+        "Фрукты и ягоды": false,
+        "Овощи": true,
+        "Молочные продукты": true,
+        "Лекарства": true,
+        "Сладкое": true,
+        "Крупы": true,
+        "Замороженное": true,
+        "Напитки": true,
+        "Детское": true,
+        "Выпечка": true,
+        "Другое": true
+      }
+    };
     await ctx.reply(
       "Добро пожаловать! Это сцена Main.",
       Markup.keyboard(["Конфигурация", "Отдать еду", "Взять еду"])

@@ -1,4 +1,4 @@
-const { Scene } = require("./Scenes");
+const { Scene, Markup } = require("./Scenes");
 
 new (class Start extends Scene {
   constructor() {
@@ -7,14 +7,28 @@ new (class Start extends Scene {
       enter: [[this.enter]]
     };
   }
+
   async enter(ctx) {
     ctx.session.baseConfig = {
       radius: null,
       alerts: true,
       name: null,
       city: null,
-      location: null
-      //TODO: preferences
+      location: null,
+      preferences: {
+        "Мясо": true,
+        "Фрукты и ягоды": true,
+        "Овощи": true,
+        "Молочные продукты": true,
+        "Лекарства": true,
+        "Сладкое": true,
+        "Крупы": true,
+        "Замороженное": true,
+        "Напитки": true,
+        "Детское": true,
+        "Выпечка": true,
+        "Другое": true
+      }
     };
     await ctx.reply(
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
@@ -65,17 +79,42 @@ new (class getStartUserLocation extends Scene {
   constructor() {
     super("getStartUserLocation");
     super.struct = {
-      on: [["location", this.onLocation]],
+      on: [["location", this.onLocation], ["text", this.onText]],
       enter: [[this.enter]]
     };
   }
   async enter(ctx) {
-    await ctx.reply("Отправьте вашу геолокацию");
+    await ctx.reply(
+        "Отправьте вашу геолокацию",
+        Markup.keyboard(["Пропустить"])
+            .oneTime()
+            .resize()
+            .extra());
+  }
+  async onText(ctx) {
+    if (ctx.message.text === "Пропустить") await ctx.scene.enter("getStartUserName");
   }
   async onLocation(ctx) {
-    ctx.session.baseConfig.name = ctx.from.first_name;
     ctx.session.baseConfig.location = ctx.message.location;
-    await ctx.base.sendConfig(ctx.session.baseConfig);
+    await ctx.scene.enter("getStartUserName");
+  }
+})();
+
+new (class getStartUserName extends Scene {
+  constructor() {
+    super("getStartUserName");
+    super.struct = {
+      on: [["text", this.onText]],
+      enter: [[this.enter]]
+    };
+  }
+  async enter(ctx) {
+    await ctx.reply("Отправьте ваше имя");
+  }
+  async onText(ctx) {
+    ctx.session.baseConfig.name = ctx.from.first_name;
+    //await ctx.base.sendConfig(ctx.session.baseConfig); //TODO: отправить конфиг в базу
     await ctx.scene.enter("Main");
   }
 })();
+
