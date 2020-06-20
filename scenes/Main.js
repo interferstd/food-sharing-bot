@@ -11,6 +11,7 @@ new (class Main extends Scene {
   }
 
   async enter(ctx) {
+    await ctx.vk.getPosts("sharingfood", 5);
     ctx.session.baseConfig = {
       radius: null,
       alerts: null,
