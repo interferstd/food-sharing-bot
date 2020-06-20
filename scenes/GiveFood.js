@@ -1,9 +1,19 @@
 const { Scene, Markup } = require("./Scenes");
+const keyboardKeys = [
+  ["Мясо🍗", "Фрукты и ягоды🍏"],
+  ["Овощи🍆", "Молочные продукты🥛"],
+  ["Лекарства💊", "Сладкое🍬"],
+  ["Крупы🍚", "Замороженное🧊"],
+  ["Напитки🍹", "Детское👶🏻"],
+  ["Выпечка🍞", "Другое🤷‍"],
+  ["Назад↩", "Отправить✉"]
+];
 
 new (class GiveFood extends Scene {
   constructor() {
     super("GiveFood");
     super.struct = {
+      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
@@ -13,16 +23,21 @@ new (class GiveFood extends Scene {
       authId: ctx.from.id,
       name: null, // название продукта
       photos: [], // массив ссылок на фотографии
-      category: null,
+      category: [],
       burnTime: null,
       location: {},
       isReserved: false,
       city: null
     };
     await ctx.reply(
-      'Тут можно добавить продукт🍏'
+      'Тут можно добавить продукт🍏', Markup.keyboard("Назад↩")
     );
     await ctx.scene.enter("NameQuery");
+  }
+  onText(ctx){
+    if(ctx.message.text==="Назад"){
+      ctx.scene.enter("Main")
+    }
   }
 })();
 
@@ -37,7 +52,7 @@ new (class NameQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Введите название продукта🍽",
-      Markup.keyboard(["Назад↩"])
+      Markup.keyboard(["Назад↩", "Пропустить🔜"])
         .oneTime()
         .resize()
     );
@@ -48,6 +63,8 @@ new (class NameQuery extends Scene {
         ctx.session.product.photos = null;
         await ctx.scene.enter("Main");
         break;
+      case "Пропустить🔜":
+        ctx.scene.enter("PhotoQuery")
       default:
         ctx.session.product.name = ctx.message.text;
         await ctx.scene.enter("PhotoQuery");
@@ -107,16 +124,6 @@ new (class PhotoQuery extends Scene {
   }
 })();
 
-const keyboardKeys = [
-  ["Мясо🍗", "Фрукты и ягоды🍏"],
-  ["Овощи🍆", "Молочные продукты🥛"],
-  ["Лекарства💊", "Сладкое🍬"],
-  ["Крупы🍚", "Замороженное🧊"],
-  ["Напитки🍹", "Детское👶🏻"],
-  ["Выпечка🍞", "Другое🤷‍"],
-  ["Назад↩"]
-];
-
 new (class CategoryQuery extends Scene {
   constructor() {
     super("CategoryQuery");
@@ -135,11 +142,15 @@ new (class CategoryQuery extends Scene {
     );
   }
   async onText(ctx) {
-    if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)) {
-      ctx.session.product.category = ctx.message.text;
+    if ([].concat(...keyboardKeys.slice(0, -2)).includes(ctx.message.text)) {
+      ctx.session.product.category.push(ctx.message.text);
       await ctx.scene.enter("TakeTimeQuery");
-    } else if (ctx.message.text === "Назад↩")
+    } else if (ctx.message.text === "Назад↩") {
+      ctx.session.product.category = [];
       await ctx.scene.enter("PhotoQuery");
+    } else if(ctx.message.text==="Отправить✉"){
+
+    }
   }
 })();
 
@@ -152,17 +163,20 @@ new (class TakeTimeQuery extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply("В течение скольки часов забрать еду?⏰", Markup.keyboard("Пропустить🔜"));
+    await ctx.reply("В течение скольки часов забрать еду?⏰", Markup.keyboard("Назад↩", "Пропустить🔜"));
   }
   async onText(ctx) {
+    let time = new Date();
     if (Number(ctx.message.text) > 0) {
-      let time = new Date();
       time.setHours(time.getHours() + ctx.message.text);
       ctx.session.product.burnTime = time;
       ctx.scene.enter("CommentaryQuery");
     } else if(ctx.message.text==="Пропустить🔜") {
+      time.setHours(time.getHours() + 48);
       await ctx.reply("Выставлено стандартное время: 48 часов")
       await ctx.scene.enter("CommentaryQuery")
+    } else if (ctx.message.text==="Назад↩"){
+      ctx.session.product.burnTime = null;
     } else {
       await ctx.reply("Формат неверен😞");
     }
@@ -194,7 +208,7 @@ new (class CommentaryQuery extends Scene {
         await ctx.scene.enter("TakeTimeQuery");
         break;
       case "Пропустить🔜":
-    //    TODO: ДОДЕЛАТЬ
+        await ctx.scene.enter("TakeTimeQuery")
     }
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
@@ -225,8 +239,6 @@ new (class locationQuery extends Scene {
   }
   async onLocation(ctx) {
     ctx.session.product.location = ctx.message.location;
-    // TODO: Отправить ctx.session.product в БД
-    console.log(ctx.session.product);
     await ctx.scene.enter("Main");
   }
   async onText(ctx) {
@@ -236,7 +248,6 @@ new (class locationQuery extends Scene {
         ctx.session.product.location = user[0].location;
         ctx.session.product.city = user[0].city;
         const newProduct = await ctx.base.set("product", ctx.session.product);
-        console.log(newProduct);
         global.Controller.emit("newProduct", newProduct);
         await ctx.scene.enter("Main");
         break;

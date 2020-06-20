@@ -42,14 +42,14 @@ new (class TakeFood extends Scene {
     const userLocation = user[0].location;
 
     const trueLots = lots.filter(function(item) {
-      if (item.location.latitude && item.location.longitude && item)
+      if (item.location.latitude && item.location.longitude)
         if (
           distance(
             userLocation.latitude,
             userLocation.longitude,
             item.location.latitude,
             item.location.longitude
-          ) <= +user[0].radius
+          ) <= Number(user[0].radius)
         )
           return item;
     });
