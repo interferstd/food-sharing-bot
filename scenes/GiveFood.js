@@ -55,6 +55,7 @@ new (class NameQuery extends Scene {
       Markup.keyboard(["Назад↩", "Пропустить🔜"])
         .oneTime()
         .resize()
+        .extra()
     );
   }
   async onText(ctx) {
@@ -141,7 +142,7 @@ new (class CategoryQuery extends Scene {
     );
   }
   async onText(ctx) {
-    if ([].concat(...keyboardKeys.slice(0, -2)).includes(ctx.message.text)) {
+    if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)) {
       if(ctx.session.product.category.includes(ctx.message.text)){
         ctx.session.product.category = ctx.session.product.category.filter(elm=>elm!==ctx.message.text);
         ctx.reply("Катаегория удалена")
@@ -155,7 +156,7 @@ new (class CategoryQuery extends Scene {
       ctx.session.product.category = [];
       await ctx.scene.enter("PhotoQuery");
     } else if(ctx.message.text==="Отправить✉"){
-
+      await ctx.scene.enter("TakeTimeQuery");
     }
   }
 })();
@@ -168,8 +169,15 @@ new (class TakeTimeQuery extends Scene {
       enter: [[this.enter]]
     };
   }
+
   async enter(ctx) {
-    await ctx.reply("В течение скольки часов забрать еду?⏰", Markup.keyboard("Назад↩", "Пропустить🔜"));
+    await ctx.reply(
+        "В течение скольки часов забрать еду?⏰",
+        Markup.keyboard(["Назад↩", "Пропустить🔜"])
+        .oneTime()
+        .resize()
+        .extra()
+    );
   }
   async onText(ctx) {
     let time = new Date();
@@ -183,6 +191,7 @@ new (class TakeTimeQuery extends Scene {
       await ctx.scene.enter("CommentaryQuery")
     } else if (ctx.message.text==="Назад↩"){
       ctx.session.product.burnTime = null;
+      await ctx.scene.enter("CategoryQuery")
     } else {
       await ctx.reply("Формат неверен😞");
     }
