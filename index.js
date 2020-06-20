@@ -25,8 +25,9 @@ global.Controller.struct = {
     ["Error", console.log],
     [
       "DataBaseConnected",
-      function() {
-        bot.launch().then(() => console.log("Listening..."));
+      async function() {
+        await bot.launch();
+        console.log("Listening...");
       }
     ]
   ]
