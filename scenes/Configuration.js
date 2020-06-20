@@ -4,7 +4,7 @@ const keyboardKeys = [
   ["Радиус📏", "Уведомления🔔"],
   ["Имя👨", "Город🏙"],
   ["Геолокация🌍", "Предпочтения🍰"],
-  ["Сохранить💾", "Назад🔙"]
+  ["Сохранить💾", "Назад↩"]
 ];
 
 new (class StartConfiguration extends Scene {
@@ -41,7 +41,7 @@ new (class Configuration extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад🔙":
+      case "Назад↩":
         await ctx.scene.enter("Main");
         break;
       case "Сохранить💾":
@@ -86,7 +86,7 @@ new (class ConfAlerts extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Включить уведомления?🔔",
-      Markup.keyboard([["Включить✔", "Выключить❌"], ["Назад🔙"]])
+      Markup.keyboard([["Включить✔", "Выключить❌"], ["Назад↩"]])
         .oneTime()
         .resize()
         .extra()
@@ -94,7 +94,7 @@ new (class ConfAlerts extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад🔙":
+      case "Назад↩":
         await ctx.scene.enter("Configuration");
         break;
       case "Включить✔":
@@ -122,7 +122,7 @@ new (class ConfRadius extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Введите радиус в км📏",
-      Markup.keyboard(["Назад🔙"])
+      Markup.keyboard(["Назад↩"])
         .oneTime()
         .resize()
         .extra()
@@ -130,7 +130,7 @@ new (class ConfRadius extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад🔙":
+      case "Назад↩":
         await ctx.scene.enter("Configuration");
         break;
       default:
@@ -165,7 +165,7 @@ new (class ConfLocation extends Scene {
         return markup
           .oneTime()
           .resize()
-          .keyboard([markup.locationRequestButton("Отправить✉"), "Назад🔙"]);
+          .keyboard([markup.locationRequestButton("Отправить✉"), "Назад↩"]);
       })
     );
   }
@@ -177,7 +177,7 @@ new (class ConfLocation extends Scene {
   }
   async onText(ctx) {
     console.log(ctx.session.baseConfig);
-    if (ctx.message.text === "Назад🔙") ctx.scene.enter("Configuration");
+    if (ctx.message.text === "Назад↩") ctx.scene.enter("Configuration");
   }
 })();
 
@@ -192,14 +192,14 @@ new (class ConfCity extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Введите ваш город🏙",
-      Markup.keyboard(["Назад🔙"])
+      Markup.keyboard(["Назад↩"])
         .oneTime()
         .resize()
         .extra()
     );
   }
   async onText(ctx) {
-    if (ctx.message.text === "Назад🔙") {
+    if (ctx.message.text === "Назад↩") {
       ctx.scene.enter("Configuration");
     } else {
       ctx.session.baseConfig.city = ctx.message.text;

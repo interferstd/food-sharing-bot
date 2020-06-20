@@ -58,7 +58,7 @@ new (class getStartUserRadius extends Scene {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
     } else {
-      ctx.reply("❗❗❗Радиус должен быть больше 0 и меньше 100❗❗❗")
+      ctx.reply("Радиус должен быть больше 0 и меньше 100❗")
     }
   }
 })();
@@ -105,7 +105,7 @@ new (class getStartUserLocation extends Scene {
   }
   async onText(ctx) {
     // Todo: Если нет геолокации, то по городу определяем
-    if (ctx.message.text === "Пропустить")
+    if (ctx.message.text === "Пропустить🔜")
       await ctx.scene.enter("getStartUserName");
   }
   async onLocation(ctx) {
