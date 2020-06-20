@@ -9,7 +9,7 @@ new (class Start extends Scene {
   }
 
   async enter(ctx) {
-    if ((await ctx.base.get("config", { _id: ctx.from.id }).length) !== 0) {
+    if ((await ctx.base.get("config", { _id: ctx.from.id })).length !== 0) {
       await ctx.scene.enter("Main");
       return;
     }
@@ -38,8 +38,6 @@ new (class Start extends Scene {
     await ctx.reply(
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
     );
-    //TODO: redirect на main
-    // await ctx.scene.enter("Main");
     await ctx.scene.enter("getStartUserRadius");
   }
 })();
@@ -56,11 +54,11 @@ new (class getStartUserRadius extends Scene {
     await ctx.reply("Введите радиус в километрах");
   }
   async onText(ctx) {
-    if ((Number(ctx.message.text) > 0)  && (ctx.message.text<100)) {
+    if (Number(ctx.message.text) > 0 && ctx.message.text < 100) {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
     } else {
-      ctx.reply("Радиус должен быть больше 0 и меньше 100")
+      ctx.reply("Радиус должен быть больше 0 и меньше 100");
     }
   }
 })();
@@ -95,12 +93,15 @@ new (class getStartUserLocation extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply("Отправьте вашу геолокацию", Extra.markup((markup)=>{
-      return markup.oneTime().resize().keyboard([
-          markup.locationRequestButton("Отправить"),
-          "Пропустить"
-      ])
-    }));
+    await ctx.reply(
+      "Отправьте вашу геолокацию",
+      Extra.markup(markup => {
+        return markup
+          .oneTime()
+          .resize()
+          .keyboard([markup.locationRequestButton("Отправить"), "Пропустить"]);
+      })
+    );
   }
   async onText(ctx) {
     if (ctx.message.text === "Пропустить")
