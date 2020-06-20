@@ -1,10 +1,10 @@
 const { Scene, Markup } = require("./Scenes");
 
 const keyboardKeys = [
-  ["Радиус", "Уведомления"],
-  ["Имя", "Город"],
-  ["Геолокация", "Предпочтения"],
-  ["Сохранить", "Назад"]
+  ["Радиус📏", "Уведомления🔔"],
+  ["Имя👨", "Город🏙"],
+  ["Геолокация🌍", "Предпочтения🍰"],
+  ["Сохранить💾", "Назад🔙"]
 ];
 
 new (class StartConfiguration extends Scene{
@@ -32,7 +32,7 @@ new (class Configuration extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Настройки",
+      "Здесь вы можете настроить работу бота🔧",
       Markup.keyboard(keyboardKeys)
         .oneTime()
         .resize()
@@ -41,30 +41,30 @@ new (class Configuration extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад":
+      case "Назад🔙":
         await ctx.scene.enter("Main");
         break;
-      case "Сохранить":
+      case "Сохранить💾":
         await ctx.base.update("config", {_id: ctx.from.id}, ctx.session.baseConfig);
         console.log(ctx.session.baseConfig);
         await ctx.scene.enter("Main");
         break;
-      case "Радиус":
+      case "Радиус📏":
         await ctx.scene.enter("ConfRadius");
         break;
-      case "Уведомления":
+      case "Уведомления🔔":
         await ctx.scene.enter("ConfAlerts");
         break;
-      case "Геолокация":
+      case "Геолокация🌍":
         await ctx.scene.enter("ConfLocation");
         break;
-      case "Предпочтения":
+      case "Предпочтения🍰":
         await ctx.scene.enter("ConfPreference");
         break;
-      case "Имя":
+      case "Имя👨":
         await ctx.scene.enter("ConfName");
         break;
-      case "Город":
+      case "Город🏙":
         await ctx.scene.enter("ConfCity");
         break;
     }
@@ -81,8 +81,8 @@ new (class ConfAlerts extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Включить уведомления?",
-      Markup.keyboard([["Включить", "Выключить"], ["Назад"]])
+      "Включить уведомления?🔔",
+      Markup.keyboard([["Включить✔", "Выключить❌"], ["Назад🔙"]])
         .oneTime()
         .resize()
         .extra()
@@ -90,17 +90,17 @@ new (class ConfAlerts extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад":
+      case "Назад🔙":
         await ctx.scene.enter("Configuration");
         break;
-      case "Включить":
+      case "Включить✔":
         ctx.session.baseConfig.alerts = true;
-        await ctx.reply("Уведомления включены!");
+        await ctx.reply("Уведомления включены!🎉");
         await ctx.scene.enter("Configuration");
         break;
-      case "Выключить":
+      case "Выключить❌":
         ctx.session.baseConfig.alerts = false;
-        await ctx.reply("Уведомления выключены!");
+        await ctx.reply("Уведомления выключены!🔕");
         await ctx.scene.enter("Configuration");
         break;
     }
@@ -117,8 +117,8 @@ new (class ConfRadius extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Введите радиус в км",
-      Markup.keyboard(["Назад"])
+      "Введите радиус в км📏",
+      Markup.keyboard(["Назад🔙"])
         .oneTime()
         .resize()
         .extra()
@@ -126,19 +126,18 @@ new (class ConfRadius extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад":
+      case "Назад🔙":
         await ctx.scene.enter("Configuration");
         break;
       default:
-        if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1) {
+        if (Number(ctx.message.text) > 0 && ctx.message.text < 100) {
           ctx.session.baseConfig.radius = ctx.message.text;
-          await ctx.reply("Вы успешно обновили радиус!");
+          await ctx.reply("Вы успешно обновили радиус!🎉");
           await ctx.scene.enter("Configuration");
         } else {
-          ctx.reply("Попробуйте еще раз.");
+          ctx.reply("❗❗❗Радиус должен быть больше 0 и меньше 100❗❗❗");
           ctx.scene.reenter();
         }
-
         break;
     }
   }
@@ -157,8 +156,8 @@ new (class ConfLocation extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Отправьте вашу геолокацию",
-      Markup.keyboard(["Назад"])
+      "Отправьте вашу геолокацию🌍",
+      Markup.keyboard(["Назад🔙"])
         .oneTime()
         .resize()
         .extra()
@@ -167,12 +166,12 @@ new (class ConfLocation extends Scene {
   async onLocation(ctx) {
     ctx.session.baseConfig.location = ctx.message.location;
     await ctx.base.sendConfig(ctx.session.baseConfig);
-    await ctx.reply("Вы успешно одновили геолокацию!");
+    await ctx.reply("Вы успешно обновили геолокацию!🎉");
     await ctx.scene.enter("Configuration");
   }
   async onText(ctx) {
     console.log(ctx.session.baseConfig);
-    if (ctx.message.text === "Назад") ctx.scene.enter("Configuration");
+    if (ctx.message.text === "Назад🔙") ctx.scene.enter("Configuration");
   }
 })();
 
@@ -186,19 +185,19 @@ new (class ConfCity extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Введите ваш город",
-      Markup.keyboard(["Назад"])
+      "Введите ваш город🏙",
+      Markup.keyboard(["Назад🔙"])
         .oneTime()
         .resize()
         .extra()
     );
   }
   async onText(ctx) {
-    if (ctx.message.text === "Назад") {
+    if (ctx.message.text === "Назад🔙") {
       ctx.scene.enter("Configuration");
     } else {
       ctx.session.baseConfig.city = ctx.message.text;
-      await ctx.reply("Вы успешно обновили город!");
+      await ctx.reply("Вы успешно обновили город!🎉");
       await ctx.scene.enter("Configuration");
     }
   }
@@ -213,7 +212,7 @@ new (class ConfName extends Scene {
   }
   async enter(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
-    ctx.reply("Имя обновлено");
+    ctx.reply("Имя обновлено🎉");
     await ctx.scene.enter("Configuration");
   }
 
@@ -229,10 +228,10 @@ new (class ConfPreference extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Выбор предпочтений",
+      "Выбор предпочтений🍰",
       Markup.keyboard(
         [].concat(
-          [["Сохранить"]],
+          [["Сохранить💾"]],
           Object.entries(ctx.session.baseConfig.preferences).map(it => [
             it[0] + (it[1] ? " ✅" : " ❌")
           ])
@@ -252,7 +251,7 @@ new (class ConfPreference extends Scene {
         inp + " set to " + prefs[inp],
         Markup.keyboard(
           [].concat(
-            [["Сохранить"]],
+            [["Сохранить💾"]],
             Object.entries(prefs).map(it => [it[0] + (it[1] ? " ✅" : " ❌")])
           )
         )
@@ -260,9 +259,9 @@ new (class ConfPreference extends Scene {
           .resize()
           .extra()
       );
-    } else if (ctx.message.text === "Сохранить") {
+    } else if (ctx.message.text === "Сохранить💾") {
       await ctx.scene.enter("Configuration");
-      await ctx.reply("Вы успешно обновили предпочтения!");
+      await ctx.reply("Вы успешно обновили предпочтения!🎉");
     }
   }
 })();

@@ -19,10 +19,8 @@ new (class GiveFood extends Scene {
       isReserved: false
     };
     await ctx.reply(
-      'Вы зашли в раздел "Отдать еду". Тут можно добавить продукт.'
+      'Тут можно добавить продукт🍏'
     );
-    // TODO: поставить нормальный переход
-    //await ctx.scene.enter("TakeTimeQuery");
     await ctx.scene.enter("NameQuery");
   }
 })();
@@ -37,16 +35,15 @@ new (class NameQuery extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Введите название продукта",
-      Markup.keyboard(["Назад"])
+      "Введите название продукта🍽",
+      Markup.keyboard(["Назад🔙"])
         .oneTime()
         .resize()
-        .extra()
     );
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Назад":
+      case "Назад🔙":
         ctx.session.product.photos = null;
         await ctx.scene.enter("Main");
         break;
@@ -71,8 +68,8 @@ new (class PhotoQuery extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Загрузите от 1 до 10 фотографий продукта",
-      Markup.keyboard(["Загрузить", "Назад"])
+      "Загрузите от 1 до 10 фотографий продукта🖼",
+      Markup.keyboard(["Загрузить💿", "Назад🔙"])
         .oneTime()
         .resize()
         .extra()
@@ -81,15 +78,15 @@ new (class PhotoQuery extends Scene {
   async onText(ctx) {
     const { product } = ctx.session;
     switch (ctx.message.text) {
-      case "Назад":
+      case "Назад🔙":
         await ctx.scene.enter("NameQuery");
         product.photos = [];
         break;
-      case "Загрузить":
+      case "Загрузить💿":
         if (product.photos.length > 0 && product.photos.length < 10) {
           await ctx.scene.enter("CategoryQuery");
         } else {
-          await ctx.reply("Загрузите корректное количество фотографий");
+          await ctx.reply("Загрузите корректное количество фотографий😖");
           //  Очищение локального кеша с фотками
           product.photos = [];
           await ctx.scene.reenter();
@@ -108,11 +105,11 @@ new (class PhotoQuery extends Scene {
 })();
 
 const keyboardKeys = [
-  ["Мясо", "Фрукты и ягоды", "Овощи"],
-  ["Молочные продукты", "Лекарства", "Сладкое"],
-  ["Крупы", "Замороженное", "Напитки"],
-  ["Детское", "Выпечка", "Другое"],
-  ["Назад"]
+  ["Мясо🍗", "Фрукты и ягоды🍏", "Овощи🍆"],
+  ["Молочные продукты🥛", "Лекарства💊", "Сладкое🍬"],
+  ["Крупы🍚", "Замороженное🧊", "Напитки"],
+  ["Детское👶🏻", "Выпечка🍞", "Другое🤷‍"],
+  ["Назад🔙"]
 ];
 
 new (class CategoryQuery extends Scene {
@@ -123,21 +120,21 @@ new (class CategoryQuery extends Scene {
       enter: [[this.enter]]
     };
   }
+  async enter(ctx) {
+    await ctx.reply(
+        "Выберите категорию🍰",
+        Markup.keyboard(keyboardKeys)
+            .oneTime()
+            .resize()
+            .extra()
+    );
+  }
   async onText(ctx) {
     if ([].concat(...keyboardKeys.slice(0, -1)).includes(ctx.message.text)) {
       ctx.session.product.category = ctx.message.text;
       await ctx.scene.enter("TakeTimeQuery");
-    } else if (ctx.message.text === "Назад")
+    } else if (ctx.message.text === "Назад🔙")
       await ctx.scene.enter("PhotoQuery");
-  }
-  async enter(ctx) {
-    await ctx.reply(
-      "Выберите категорию",
-      Markup.keyboard(keyboardKeys)
-        .oneTime()
-        .resize()
-        .extra()
-    );
   }
 })();
 
@@ -150,7 +147,7 @@ new (class TakeTimeQuery extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply("В течение скольки часов забрать еду?");
+    await ctx.reply("В течение скольки часов забрать еду?⏰");
   }
   async onText(ctx) {
     if (Number(ctx.message.text) > 0) {
@@ -159,7 +156,7 @@ new (class TakeTimeQuery extends Scene {
       ctx.session.product.burnTime = time;
       ctx.scene.enter("CommentaryQuery");
     } else {
-      await ctx.reply("Формат неверен");
+      await ctx.reply("Формат неверен😞");
     }
   }
 })();
@@ -174,8 +171,8 @@ new (class CommentaryQuery extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Введите комментарий",
-      Markup.keyboard(["Назад"])
+      "Введите комментарий📃",
+      Markup.keyboard(["Назад🔙"])
         .oneTime()
         .resize()
         .extra()
@@ -186,7 +183,7 @@ new (class CommentaryQuery extends Scene {
     if (ctx.message.text) {
       product.commentary = ctx.message.text;
       await ctx.scene.enter("locationQuery");
-    } else if (ctx.message.text === "Назад") {
+    } else if (ctx.message.text === "Назад🔙") {
       product.commentary = null;
       await ctx.scene.enter("TakeTimeQuery");
     }
@@ -206,8 +203,8 @@ new (class locationQuery extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-      "Установите геометку",
-      Markup.keyboard(["Использовать стандартную", "Назад"])
+      "Установите геометку🌍",
+      Markup.keyboard(["Использовать стандартную🌐", "Назад🔙"])
         .oneTime()
         .resize()
         .extra()
@@ -221,7 +218,7 @@ new (class locationQuery extends Scene {
   }
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Использовать стандартную":
+      case "Использовать стандартную🌐":
         // TODO: обратиться к USER и присвоить ctx.session.product.location локацию изера
         console.log(ctx.session.product);
         const newProduct = await ctx.base.set("product", ctx.session.product);
@@ -229,7 +226,7 @@ new (class locationQuery extends Scene {
         global.Controller.emit("newProduct", newProduct);
         await ctx.scene.enter("Main");
         break;
-      case "Назад":
+      case "Назад🔙":
         ctx.session.product.location = {};
         await ctx.scene.enter("CommentaryQuery");
         break;

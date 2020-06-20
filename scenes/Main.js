@@ -33,8 +33,8 @@ new (class Main extends Scene {
       }
     };
     await ctx.reply(
-      "Добро пожаловать! Это сцена Main.",
-      Markup.keyboard(["Конфигурация", "Отдать еду", "Взять еду"])
+      "Добро пожаловать🙋",
+      Markup.keyboard(["Конфигурация⚙", "Отдать еду🍏", "Взять еду👋"])
         .oneTime()
         .resize()
         .extra()
@@ -43,13 +43,13 @@ new (class Main extends Scene {
 
   async onText(ctx) {
     switch (ctx.message.text) {
-      case "Конфигурация":
+      case "Конфигурация⚙":
         await ctx.scene.enter("StartConfiguration");
         break;
-      case "Отдать еду":
+      case "Отдать еду🍏":
         await ctx.scene.enter("GiveFood");
         break;
-      case "Взять еду":
+      case "Взять еду👋":
         await ctx.scene.enter("TakeFood");
         break;
     }
