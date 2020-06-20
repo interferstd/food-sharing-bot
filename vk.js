@@ -16,50 +16,48 @@ class Vk {
     };
   }
   async getPosts(domain, count) {
-    console.log(
-      await User.api(
-        "wall.get",
-        {
-          // owner_id: -1,
-          // fields: {},
-          domain: domain,
-          count: count,
-          filter: "others",
-          extended: 1
-        },
-        function(data) {
-          var ret = "",
-            max = 0;
-          function getPosto(item) {
-            for (var photo in item)
-              if (/(\w)_(\d\d*)/.test(photo)) {
-                const size = +photo.match(/(\w)_(\d\d*)/)[2];
-                if (size > max) {
-                  max = size;
-                  ret = item[photo];
-                }
+    await User.api(
+      "wall.get",
+      {
+        // owner_id: -1,
+        // fields: {},
+        domain: domain,
+        count: count,
+        filter: "others",
+        extended: 1
+      },
+      function(data) {
+        var ret = "",
+          max = 0;
+        function getPosto(item) {
+          for (var photo in item)
+            if (/(\w)_(\d\d*)/.test(photo)) {
+              const size = +photo.match(/(\w)_(\d\d*)/)[2];
+              if (size > max) {
+                max = size;
+                ret = item[photo];
               }
-            return ret;
-          }
-          const post = data.items
-            .map(item => {
-              return {
-                text: item.text,
-                att: item.attachments
-                  .map(photo => photo.photo)
-                  .map(item => {
-                    return {
-                      user_id: item.user_id,
-                      location: { latitude: item.lat, longitude: item.long },
-                      key: item.access_key,
-                      photo: getPosto(item)
-                    };
-                  })
-              };
-            })
-            .map(post => global.Controller.emit("newVkPost", post));
+            }
+          return ret;
         }
-      )
+        const post = data.items
+          .map(item => {
+            return {
+              text: item.text,
+              att: item.attachments
+                .map(photo => photo.photo)
+                .map(item => {
+                  return {
+                    user_id: item.user_id,
+                    location: { latitude: item.lat, longitude: item.long },
+                    key: item.access_key,
+                    photo: getPosto(item)
+                  };
+                })
+            };
+          })
+          .map(post => global.Controller.emit("newVkPost", post));
+      }
     );
   }
 }

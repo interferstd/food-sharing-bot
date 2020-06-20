@@ -21,6 +21,10 @@ const distance = function(lat1, lon1, lat2, lon2) {
   }
 };
 
+function generateMessage() {
+
+}
+
 new (class TakeFood extends Scene {
   constructor() {
     super("TakeFood");

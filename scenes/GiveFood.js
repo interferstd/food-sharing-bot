@@ -134,17 +134,23 @@ new (class CategoryQuery extends Scene {
   }
   async enter(ctx) {
     await ctx.reply(
-        "Выберите категорию🍰",
+        "Выберите категории🍰\n\nПосле выбора нажмите кнопку \"отправить\"",
         Markup.keyboard(keyboardKeys)
-            .oneTime()
             .resize()
             .extra()
     );
   }
   async onText(ctx) {
     if ([].concat(...keyboardKeys.slice(0, -2)).includes(ctx.message.text)) {
-      ctx.session.product.category.push(ctx.message.text);
-      await ctx.scene.enter("TakeTimeQuery");
+      if(ctx.session.product.category.includes(ctx.message.text)){
+        ctx.session.product.category = ctx.session.product.category.filter(elm=>elm!==ctx.message.text);
+        ctx.reply("Катаегория удалена")
+        console.log(ctx.session.product.category)
+      } else {
+        ctx.session.product.category.push(ctx.message.text);
+        ctx.reply("Категория добавлена")
+        console.log(ctx.session.product.category)
+      }
     } else if (ctx.message.text === "Назад↩") {
       ctx.session.product.category = [];
       await ctx.scene.enter("PhotoQuery");
