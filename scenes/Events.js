@@ -1,19 +1,12 @@
 require("./Scenes");
-const dicts = require('../dicts.json');
-const Morpher = require('morpher-ru');
-let morpher = new Morpher();
 
+const dicts = require('../dicts.json');
 function foodParser(text) {
-  var obj = {};
-  text.toLowerCase().split(' ').forEach(async elm=> {
-    let word = await morpher.declension(elm);
+  var obj = [];
+  text.toLowerCase().split(' ').forEach(elm=>{
     for (var key in dicts){
-      if(dicts[key].includes(word)){
-        if(obj[key].length){
-         obj[key].push(word);
-        } else {
-          obj[key] = [word];
-        }
+      if(dicts[key].includes(elm)){
+        obj.push(key)
       }
     }
   })
@@ -48,7 +41,7 @@ async function sendForAll(product) {
 }
 
 async function getVkEvent(post) {
-  console.log(post);
+
 }
 
 global.Controller.struct = {
