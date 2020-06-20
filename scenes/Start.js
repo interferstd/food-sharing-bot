@@ -9,7 +9,12 @@ new (class Start extends Scene {
   }
 
   async enter(ctx) {
+    if(await ctx.base.get("config", {_id:ctx.from.id}).length!==0){
+      await ctx.scene.enter("Main");
+      return;
+    }
     ctx.session.baseConfig = {
+      _id: null, // user.id
       radius: null,
       alerts: true,
       name: null,
@@ -34,8 +39,8 @@ new (class Start extends Scene {
       "Начальная конфигурация пользователя. Все настройки можно будет изменить в будущем"
     );
     //TODO: redirect на main
-    await ctx.scene.enter("Main");
-    //await ctx.scene.enter("getStartUserRadius")
+    // await ctx.scene.enter("Main");
+    await ctx.scene.enter("getStartUserRadius")
   }
 })();
 
@@ -48,10 +53,10 @@ new (class getStartUserRadius extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply("Введите радиус");
+    await ctx.reply("Введите радиус в километрах");
   }
   async onText(ctx) {
-    if (/\d/.test(ctx.message.text) && +ctx.message.text >= 1) {
+    if ((Number(ctx.message.text) >= 1)  && (ctx.message.text<100)) {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
     }
@@ -104,16 +109,15 @@ new (class getStartUserName extends Scene {
   constructor() {
     super("getStartUserName");
     super.struct = {
-      on: [["text", this.onText]],
       enter: [[this.enter]]
     };
   }
   async enter(ctx) {
-    await ctx.reply("Отправьте ваше имя");
-  }
-  async onText(ctx) {
     ctx.session.baseConfig.name = ctx.from.first_name;
-    //await ctx.base.sendConfig(ctx.session.baseConfig); //TODO: отправить конфиг в базу
+    ctx.session.baseConfig._id = ctx.from.id;
+    console.log(ctx.session.baseConfig)
+    await ctx.base.remove("config", {_id:ctx.from.id})
+    await ctx.base.set("config", ctx.session.baseConfig);
     await ctx.scene.enter("Main");
   }
 })();

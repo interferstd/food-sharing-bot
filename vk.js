@@ -1,4 +1,4 @@
-const { vk_token } = require("../config.json");
+const { vk_token } = require("./config.json");
 const VK = require("vk-node-sdk");
 const User = new VK.User(vk_token);
 
@@ -32,5 +32,5 @@ class Vk {
     );
   }
 }
-
+// await ctx.vk.getPosts("sharingfood", 5); //TODO: vk
 module.exports = Vk;

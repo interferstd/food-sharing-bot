@@ -224,6 +224,9 @@ new (class locationQuery extends Scene {
         // TODO: обратиться к USER и присвоить ctx.session.product.location локацию изера
         // TODO: Отправить ctx.session.product в БД
         console.log(ctx.session.product);
+        const newProduct = await ctx.base.set("product", ctx.session.product);
+        console.log(newProduct);
+        global.Controller.emit("newProduct", newProduct);
         await ctx.scene.enter("Main");
         break;
       case "Назад":
