@@ -9,6 +9,8 @@ new (class TakeFood extends Scene {
     };
   }
   async enter(ctx) {
+    const lots = await ctx.base.get("product");
+    console.log(lots)
     ctx.reply(
       'Вы зашли в раздел "Взять еду"',
       Markup.keyboard(["Назад"])
@@ -16,7 +18,7 @@ new (class TakeFood extends Scene {
         .resize()
     );
 
-    await ctx.reply("123");
+    await ctx.reply("Новый лот");
   }
   async onText(ctx) {
     switch (ctx.message.text) {

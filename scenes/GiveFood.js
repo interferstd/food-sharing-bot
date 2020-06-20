@@ -10,7 +10,7 @@ new (class GiveFood extends Scene {
   async enter(ctx) {
     ctx.session.product = {
       _id: undefined, // ID продукта
-      authId: null, // это ID пользователя, отправившего продукт
+      authId: ctx.from.id,
       name: null, // название продукта
       photos: [], // массив ссылок на фотографии
       category: null,
@@ -232,7 +232,8 @@ new (class locationQuery extends Scene {
   async onText(ctx) {
     switch (ctx.message.text) {
       case "Использовать стандартную🌐":
-        ctx.session.product.location = ctx.base.get("config", {_id: ctx.from.id});
+        const user = await ctx.base.get("config", {_id: ctx.from.id});
+        ctx.session.product.location = user[0].location;
         const newProduct = await ctx.base.set("product", ctx.session.product);
         console.log(newProduct);
         global.Controller.emit("newProduct", newProduct);
