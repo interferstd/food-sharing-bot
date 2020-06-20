@@ -18,18 +18,18 @@ new (class Main extends Scene {
       city: null,
       location: null,
       preferences: {
-        "Мясо": true,
+        Мясо: true,
         "Фрукты и ягоды": false,
-        "Овощи": true,
+        Овощи: true,
         "Молочные продукты": true,
-        "Лекарства": true,
-        "Сладкое": true,
-        "Крупы": true,
-        "Замороженное": true,
-        "Напитки": true,
-        "Детское": true,
-        "Выпечка": true,
-        "Другое": true
+        Лекарства: true,
+        Сладкое: true,
+        Крупы: true,
+        Замороженное: true,
+        Напитки: true,
+        Детское: true,
+        Выпечка: true,
+        Другое: true
       }
     };
     await ctx.reply(
