@@ -9,6 +9,7 @@ class Base {
         global.Controller.emit("Error", err);
         return;
       }
+      global.DataBaseController = this;
       global.DataBase = client.db("foodshare");
       global.Controller.emit("DataBaseConnected");
     });
