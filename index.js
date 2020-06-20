@@ -6,7 +6,7 @@ const {
   ScenesController
 } = require("./scenes");
 
-const { telegram } = require("./config.json");
+const { telegram, vk_token } = require("./config.json");
 global.bot = new Telegraf(telegram);
 
 global.bot.use(
@@ -15,6 +15,9 @@ global.bot.use(
   // Telegraf.log(),
   global.Scenes.stage.middleware()
 );
+
+const vk = require("./vk.js").get(vk_token);
+vk.getPosts("sharingfood", 5);
 
 global.bot.start(ctx => ctx.scene.enter("Start"));
 
