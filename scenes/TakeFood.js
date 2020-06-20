@@ -52,7 +52,8 @@ new (class TakeFood extends Scene {
     const userLocation = user[0].location;
 
     const trueLots = lots.filter(function(item) {
-      if (item.location.latitude && item.location.longitude)
+      if ((item.category.map(cat => (cat in user[0].preferences && user[0].preferences[cat] === true)).includes(true))
+          && item.location.latitude && item.location.longitude)
         if (
           distance(
             userLocation.latitude,
@@ -64,11 +65,10 @@ new (class TakeFood extends Scene {
           return item;
     });
     trueLots.map(async lot => {
-      await ctx.reply(`Название: ${lot.name}\nОписание: ${lot.commentary}`);
       await ctx.telegram.sendMediaGroup(
         ctx.from.id,
-        lot.photos.map(function(item) {
-          return { type: "photo", media: item.id };
+        lot.photos.map(function(item, index) {
+          return (index === 0) ? { type: "photo", media: item.id, caption: `Название: ${lot.name}\nОписание: ${lot.commentary}`} : { type: "photo", media: item.id }
         })
       );
     });
