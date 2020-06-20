@@ -204,7 +204,11 @@ new (class ConfCity extends Scene {
     } else {
       const addr = ctx.message.text;
       ctx.session.baseConfig.city = addr;
-      ctx.session.baseConfig.location = await global.google.geocode(addr);
+      ctx.session.baseConfig.location = await global.google.geocode(
+        JSON.stringify({
+          address: addr
+        })
+      );
       await ctx.reply("Вы успешно обновили город!🎉");
       await ctx.scene.enter("Configuration");
     }

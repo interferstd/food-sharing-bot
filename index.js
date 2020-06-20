@@ -9,15 +9,15 @@ const {
 const { telegram, geocode } = require("./config.json");
 
 const nodeFetch = require("node-fetch");
-geocode.fetch = (url, options) => {
-  return nodeFetch(url, {
-    ...options,
-    headers: {
-      "user-agent": "My application <email@domain.com>",
-      "X-Specific-Header": "Specific value"
-    }
-  });
-};
+// geocode.fetch = (url, options) => {
+//   return nodeFetch(url, {
+//     ...options,
+//     headers: {
+//       "user-agent": "My application <email@domain.com>",
+//       "X-Specific-Header": "Specific value"
+//     }
+//   });
+// };
 global.google = require("node-geocoder")(geocode);
 
 const bot = new Telegraf(telegram);
