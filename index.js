@@ -17,7 +17,7 @@ global.bot.use(
 );
 
 const vk = require("./vk.js").get(vk_token);
-vk.getPosts("sharingfood", 5);
+vk.getPosts("sharingfood", 3);
 
 global.bot.start(ctx => ctx.scene.enter("Start"));
 

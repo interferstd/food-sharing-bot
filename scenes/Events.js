@@ -27,15 +27,19 @@ async function sendForAll(product) {
   idArray.map(async id => await global.bot.telegram.sendMessage(id, "123"));
 }
 
+<<<<<<< HEAD
+async function getVkEvent(post) {
+  console.log(post);
+=======
 async function getVkEvent(post){
   console.log(post)
+>>>>>>> 203e0ea8e6a3c7c1bba7b104bb8f818bc9fe9042
 }
 
 global.Controller.struct = {
   on: [
-    // TODO: vk навешивать сюда
-    // TODO: размещение постова(можно вынести в любой другой оно дополняется ?также можно сделать удаление)
     ["Error", console.log],
-    ["newProduct", sendForAll]
+    ["newProduct", sendForAll],
+    ["newVkPost", getVkEvent]
   ]
 };
