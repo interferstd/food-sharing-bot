@@ -27,8 +27,13 @@ async function sendForAll(product) {
   idArray.map(async id => await global.bot.telegram.sendMessage(id, "123"));
 }
 
+<<<<<<< HEAD
 async function getVkEvent(post) {
   console.log(post);
+=======
+async function getVkEvent(post){
+  console.log(post)
+>>>>>>> 203e0ea8e6a3c7c1bba7b104bb8f818bc9fe9042
 }
 
 global.Controller.struct = {
