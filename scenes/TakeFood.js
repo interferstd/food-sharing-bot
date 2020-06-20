@@ -21,8 +21,14 @@ const distance = function(lat1, lon1, lat2, lon2) {
   }
 };
 
-function generateMessage() {
-
+function generateMessage(obj) {
+  return `${obj.name?obj.name+"\n":''}`
+      // todo: добавить расстояние до пользователя как часть объекта
+      +`${obj.distance?obj.distance+" км до места\n":''}`
+      +`${obj.city?"Город: "+obj.city+'\n':''}`
+      +`${obj.burnTime?"Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
+      +`${obj.commentary?obj.commentary+"\n":''}`
+      +`${obj.category.length?obj.category.map(elm=>elm+" ")+"\n":''}`
 }
 
 new (class TakeFood extends Scene {
