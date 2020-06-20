@@ -1,7 +1,7 @@
 require("./Scenes");
 
 function distance(lat1, lon1, lat2, lon2) {
-  if (lat1 == lat2 && lon1 == lon2) {
+  if (lat1 === lat2 && lon1 === lon2) {
     return 0;
   } else {
     let radlat1 = (Math.PI * lat1) / 180;
@@ -25,6 +25,10 @@ async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
   const idArray = users.map(elm => elm._id);
   idArray.map(async id => await global.bot.telegram.sendMessage(id, "123"));
+}
+
+async function getVkEvent(post){
+  console.log(post)
 }
 
 global.Controller.struct = {
