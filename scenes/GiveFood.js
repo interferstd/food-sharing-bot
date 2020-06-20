@@ -15,7 +15,8 @@ new (class GiveFood extends Scene {
       photos: [], // массив ссылок на фотографии
       category: null,
       burnTime: null,
-      location: {}
+      location: {},
+      isReserved: false
     };
     await ctx.reply(
       'Вы зашли в раздел "Отдать еду". Тут можно добавить продукт.'

@@ -1,4 +1,4 @@
-const { Scene, Markup } = require("./Scenes");
+const { Scene, Markup, Extra } = require("./Scenes");
 
 new (class Start extends Scene {
   constructor() {
@@ -56,13 +56,16 @@ new (class getStartUserRadius extends Scene {
     await ctx.reply("Введите радиус в километрах");
   }
   async onText(ctx) {
-    if ((Number(ctx.message.text) >= 1)  && (ctx.message.text<100)) {
+    if ((Number(ctx.message.text) > 0)  && (ctx.message.text<100)) {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
+    } else {
+      ctx.reply("Радиус должен быть больше 0 и меньше 100")
     }
   }
 })();
 
+//TODO: в будущем убрать город, так как можно его получить через Api карт
 new (class getStartUserCity extends Scene {
   constructor() {
     super("getStartUserCity");
@@ -89,12 +92,12 @@ new (class getStartUserLocation extends Scene {
     };
   }
   async enter(ctx) {
-    await ctx.reply(
-        "Отправьте вашу геолокацию",
-        Markup.keyboard(["Пропустить"])
-            .oneTime()
-            .resize()
-            .extra());
+    await ctx.reply("Отправьте вашу геолокацию", Extra.markup((markup)=>{
+      return markup.oneTime().resize().keyboard([
+          markup.locationRequestButton("Отправить"),
+          "Пропустить"
+      ])
+    }));
   }
   async onText(ctx) {
     if (ctx.message.text === "Пропустить") await ctx.scene.enter("getStartUserName");
