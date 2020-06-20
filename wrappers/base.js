@@ -52,7 +52,7 @@ class Base {
   async remove(name, details) {
     var collection = global.DataBase.collection(name);
     try {
-      const resp = await collection.remove(details);
+      const resp = await collection.deleteMany(details);
       return resp.ops;
     } catch (e) {
       global.Controller.emit("Error", e);
