@@ -6,7 +6,9 @@ const {
   ScenesController
 } = require("./scenes");
 
-const { telegram, vk_token, foodshare } = require("./config.json");
+const { telegram, vk_token, foodshare, geocode } = require("./config.json");
+
+global.geocode = require("node-geocoder")(geocode);
 global.bot = new Telegraf(telegram);
 const vk = require("./vk.js").get(vk_token);
 
@@ -22,6 +24,6 @@ global.Controller.on("DataBaseConnected", async () => {
   await global.bot.launch();
   setInterval(() => {
     foodshare.map(name => vk.getPosts(name, 10));
-  }, 60000);
+  }, 6000); //TODO: 60000
   console.log("Listening...");
 });

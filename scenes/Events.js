@@ -1,27 +1,33 @@
 require("./Scenes");
 
-const dicts = require('../dicts.json');
+const dicts = require("../dicts.json");
 function foodParser(text) {
-  let obj = []
-  for(let key in dicts){
-    dicts[key].forEach(elm=>{
-      if(text.toLowerCase().indexOf(elm)> -1 && !obj.includes(key)){
-        obj.push(key)
+  let obj = [];
+  for (let key in dicts) {
+    dicts[key].forEach(elm => {
+      if (text.toLowerCase().indexOf(elm) > -1 && !obj.includes(key)) {
+        obj.push(key);
       }
-    })
+    });
   }
-  return obj
+  return obj;
 }
 
 function generateMessage(obj) {
-  return `${obj.name?obj.name+"\n":''}`
-      // todo: добавить расстояние до пользователя как часть объекта
-      +`${obj.distance?obj.distance+" км до места\n":''}`
-      +`${obj.city?"🏢 Город: "+obj.city+'\n':''}`
-      +`${obj.burnTime?"⏰ Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
-      +`${obj.commentary?"📄 "+obj.commentary+"\n":''}`
-      +`${obj.category.length?"🍰 Категории:\n"+obj.category.map(elm=>elm+" ")+"\n\n":''}`
-      +`${obj.profileLink?`📞 Связь: ${obj.profileLink}`:"Контактов нет"}`
+  return (
+    `${obj.name ? obj.name + "\n" : ""}` +
+    // todo: добавить расстояние до пользователя как часть объекта
+    `${obj.distance ? obj.distance + " км до места\n" : ""}` +
+    `${obj.city ? "Город: " + obj.city + "🏢\n" : ""}` +
+    `${
+      obj.burnTime
+        ? "Истекает через " + obj.burnTime.getHours() + " часов\n"
+        : ""
+    }` +
+    `${obj.commentary ? obj.commentary + "\n" : ""}` +
+    `${obj.category.length ? obj.category.map(elm => elm + " ") + "\n" : ""}` +
+    `${obj.profileLink ? `Связь: ${obj.profileLink}` : "Контактов нет"}`
+  );
 }
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -70,15 +76,31 @@ async function sendForAll(product) {
 }
 
 async function getVkEvent(post) {
-
+  if(!foodParser(post.text).length) return
+  let productPost = {
+    _id: undefined, // ID продукта
+    authId: null,
+    name: null, // название продукта //TODO из парсинга вытащить данные о продукте
+    photos: post.attachments, // массив ссылок на фотографии
+    category: foodParser(post.text),
+    burnTime: null,
+    location: post.location,
+    isReserved: false,
+    city: null,
+    commentary: post.text
+  };
+  const newProduct = await global.bot.DataBaseController.set("product", productPost);
+  global.Controller.emit("newProduct", newProduct);
+  //todo: очистить и добавить в базу
+  // todo: отправить нужным пользователям
 }
 
 async function checkVkPost(post) {
   const details = { _id: post._id };
   const res = await global.DataBaseController.get("vkPosts", details);
-  console.log(details, res);
-  if (res.length === 0) {
-    const res = await global.DataBaseController.set("vkPosts", post);
+  if (res.length !== 0) {
+    //TODO: ===
+    // TODO: const res = await global.DataBaseController.set("vkPosts", post);
     global.Controller.emit("newVkPost", post);
   }
 }
@@ -94,4 +116,4 @@ global.Controller.struct = {
     ["checkVkPosts", checkVkPosts],
     ["newVkPost", getVkEvent]
   ]
-}
+};
