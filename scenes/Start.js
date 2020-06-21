@@ -77,12 +77,16 @@ new (class getStartUserCity extends Scene {
   }
   async onText(ctx) {
     const addr = await global.geocode.geocode(ctx.message.text);
-    ctx.session.baseConfig.city = addr[0].state;
-    ctx.session.baseConfig.location = {
-      latitude: addr[0].latitude,
-      longitude: addr[0].longitude
-    };
-    await ctx.scene.enter("getStartUserLocation");
+    if (addr[0]) {
+      ctx.session.baseConfig.city = addr[0].state;
+      ctx.session.baseConfig.location = {
+        latitude: addr[0].latitude,
+        longitude: addr[0].longitude
+      };
+      await ctx.scene.enter("getStartUserLocation");
+    } else {
+      await ctx.reply("Мне не удалось ничего найти, попробуйте ещё раз...");
+    }
   }
 })();
 

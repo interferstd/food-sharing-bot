@@ -203,14 +203,19 @@ new (class ConfCity extends Scene {
       ctx.scene.enter("Configuration");
     } else {
       const addr = await global.geocode.geocode(ctx.message.text);
-      ctx.session.baseConfig.city = addr[0].state;
-      ctx.session.baseConfig.location = {
-        latitude: addr[0].latitude,
-        longitude: addr[0].longitude
-      };
-      console.log(ctx.session.baseConfig);
-      await ctx.reply("Вы успешно обновили город!🎉");
-      await ctx.scene.enter("Configuration");
+      if (addr[0]) {
+        ctx.session.baseConfig.city = addr[0].state;
+        ctx.session.baseConfig.location = {
+          latitude: addr[0].latitude,
+          longitude: addr[0].longitude
+        };
+        await ctx.reply(
+          "Вы успешно обновили город!🎉\nМестоположение: " + addr[0].state
+        );
+        await ctx.scene.enter("Configuration");
+      } else {
+        await ctx.reply("Мне не удалось ничего найти, попробуйте ещё раз...");
+      }
     }
   }
 })();
