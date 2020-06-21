@@ -81,9 +81,6 @@ new (class TakeFood extends Scene {
       case "Назад":
         await ctx.scene.enter("Main");
         break;
-      default:
-        await ctx.reply("Wrong!");
-        break;
     }
   }
 })();

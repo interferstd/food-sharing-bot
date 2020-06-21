@@ -65,7 +65,25 @@ async function sendForAll(product) {
   });
 }
 
-async function getVkEvent(post) {}
+async function getVkEvent(post) {
+  if(!foodParser(post.text).length) return
+  let productPost = {
+    _id: undefined, // ID продукта
+    authId: null,
+    name: null, // название продукта //TODO из парсинга вытащить данные о продукте
+    photos: post.attachments, // массив ссылок на фотографии
+    category: foodParser(post.text),
+    burnTime: null,
+    location: post.location,
+    isReserved: false,
+    city: null,
+    commentary: post.text
+  };
+  const newProduct = await global.bot.DataBaseController.set("product", productPost);
+  global.Controller.emit("newProduct", newProduct);
+  //todo: очистить и добавить в базу
+  // todo: отправить нужным пользователям
+}
 
 async function checkVkPost(post) {
   const details = { _id: post._id };
