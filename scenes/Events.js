@@ -54,49 +54,52 @@ function distance(lat1, lon1, lat2, lon2) {
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
   const idArray = users.map(elm => elm._id);
-  idArray.map(async id => {
-    await global.ctx.telegram.sendMediaGroup(
+  for (var id of idArray) {
+    await global.bot.telegram.sendMediaGroup(
       id,
       product.photos.map(function(item, index) {
         return { type: "photo", media: item.id };
       })
     );
-    await global.ctx.telegram.sendMessage(id, generateMessage(product));
-  });
+    await global.bot.telegram.sendMessage(id, generateMessage(product));
+  }
 }
 
 async function getVkEvent(post) {
-  if(!foodParser(post.text).length) return
+  if (!foodParser(post.text).length) return;
   let productPost = {
     _id: undefined, // ID продукта
     authId: null,
     name: null, // название продукта //TODO из парсинга вытащить данные о продукте
-    photos: post.attachments, // массив ссылок на фотографии
+    photos: post.att.map(e => {
+      return { id: e.photo };
+    }), // массив ссылок на фотографии
     category: foodParser(post.text),
     burnTime: null,
     location: post.location,
     isReserved: false,
     city: null,
-    commentary: post.text
+    commentary: post.text,
+    profileLink: post.url
   };
-  const newProduct = await global.bot.DataBaseController.set("product", productPost);
+  console.log(productPost);
+  const newProduct = await global.DataBaseController.set(
+    "product",
+    productPost
+  );
   global.Controller.emit("newProduct", newProduct);
-  //todo: очистить и добавить в базу
-  // todo: отправить нужным пользователям
 }
 
 async function checkVkPost(post) {
   const details = { _id: post._id };
   const res = await global.DataBaseController.get("vkPosts", details);
-  if (res.length !== 0) {
-    //TODO: ===
-    // TODO: const res = await global.DataBaseController.set("vkPosts", post);
+  if (res.length === 0) {
+    const res = await global.DataBaseController.set("vkPosts", post);
     global.Controller.emit("newVkPost", post);
   }
 }
 async function checkVkPosts(posts) {
-  console.log(posts);
-  posts.map(checkVkPost);
+  for (var post of posts) await checkVkPost(post);
 }
 
 global.Controller.struct = {

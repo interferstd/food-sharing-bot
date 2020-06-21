@@ -22,14 +22,24 @@ const distance = function(lat1, lon1, lat2, lon2) {
 };
 
 function generateMessage(obj) {
-  return `${obj.name?obj.name+"\n":''}`
-      // todo: добавить расстояние до пользователя как часть объекта
-      +`${obj.distance?obj.distance+" км до места\n":''}`
-      +`${obj.city?"🏢 Город: "+obj.city+'\n':''}`
-      +`${obj.burnTime?"⏰ Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
-      +`${obj.commentary?"📄 "+obj.commentary+"\n":''}`
-      +`${obj.category.length?"🍰 Категории:\n"+obj.category.map(elm=>elm+" ")+"\n\n":''}`
-      +`${obj.profileLink?`📞 Связь: ${obj.profileLink}`:"Контактов нет"}`
+  return (
+    `${obj.name ? obj.name + "\n" : ""}` +
+    // todo: добавить расстояние до пользователя как часть объекта
+    `${obj.distance ? obj.distance + " км до места\n" : ""}` +
+    `${obj.city ? "🏢 Город: " + obj.city + "\n" : ""}` +
+    `${
+      obj.burnTime
+        ? "⏰ Истекает через " + obj.burnTime.getHours() + " часов\n"
+        : ""
+    }` +
+    `${obj.commentary ? "📄 " + obj.commentary + "\n" : ""}` +
+    `${
+      obj.category.length
+        ? "🍰 Категории:\n" + obj.category.map(elm => elm + " ") + "\n\n"
+        : ""
+    }` +
+    `${obj.profileLink ? `📞 Связь: ${obj.profileLink}` : "Контактов нет"}`
+  );
 }
 
 new (class TakeFood extends Scene {
@@ -52,10 +62,19 @@ new (class TakeFood extends Scene {
     const lots = await ctx.base.get("product");
     const userLocation = user[0].location;
 
-    const trueLots = lots.filter( async function(item) {
-      item.profileLink = '@' + (await global.bot.telegram.getChat(item.authId)).username;
-      if ((item.category.map(cat => (cat in user[0].preferences && user[0].preferences[cat] === true)).includes(true))
-          && item.location.latitude && item.location.longitude)
+    const trueLots = lots.filter(async function(item) {
+      item.profileLink =
+        "@" + (await global.bot.telegram.getChat(item.authId)).username;
+      if (
+        item.category
+          .map(
+            cat =>
+              cat in user[0].preferences && user[0].preferences[cat] === true
+          )
+          .includes(true) &&
+        item.location.latitude &&
+        item.location.longitude
+      )
         if (
           distance(
             userLocation.latitude,
@@ -66,15 +85,15 @@ new (class TakeFood extends Scene {
         )
           return item;
     });
-    trueLots.map(async lot => {
-      await ctx.telegram.sendMediaGroup(
+    for (var lot of trueLots) {
+      await global.bot.telegram.sendMediaGroup(
         ctx.from.id,
         lot.photos.map(function(item, index) {
-          return { type: "photo", media: item.id }
+          return { type: "photo", media: item.id };
         })
       );
-      await ctx.reply(generateMessage(lot))
-    });
+      await ctx.reply(generateMessage(lot));
+    }
   }
   async onText(ctx) {
     switch (ctx.message.text) {

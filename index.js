@@ -25,5 +25,7 @@ global.Controller.on("DataBaseConnected", async () => {
   setInterval(() => {
     foodshare.map(name => vk.getPosts(name, 10));
   }, 6000); //TODO: 60000
-  console.log("Listening...");
+  global.DataBaseController.remove("product");
+  global.DataBaseController.remove("vkPosts");
+  global.console.log("Listening...");
 });
