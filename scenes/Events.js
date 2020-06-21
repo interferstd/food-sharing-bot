@@ -70,10 +70,9 @@ async function getVkEvent(post) {}
 async function checkVkPost(post) {
   const details = { _id: post._id };
   const res = await global.DataBaseController.get("vkPosts", details);
-  console.log(details, res);
   if (res.length !== 0) {
     //TODO: ===
-    const res = await global.DataBaseController.set("vkPosts", post);
+    // TODO: const res = await global.DataBaseController.set("vkPosts", post);
     global.Controller.emit("newVkPost", post);
   }
 }

@@ -42,9 +42,11 @@ class Vk {
             _id: item.id,
             url: "https://vk.com/id" + item.from_id,
             text: item.text,
-            att: (item.attachments || [])
+            att: ((item.attachments && console.log(item.attachments)) || [])
+              .filter(photo => photo.type === "photo")
               .map(photo => photo.photo)
               .map(item => {
+                console.log(item);
                 const photo = {
                   user_id: item.user_id,
                   key: item.access_key,
