@@ -2,7 +2,7 @@ require("./Scenes");
 const { relevance, generateMessage, foodParser } = require("../relevant");
 
 async function sendForAll(product) {
-  const users = await global.DataBaseController.get("config");
+  var users = await global.DataBaseController.get("config");
   users = users.filter(user => relevance(product, user) && user.alerts);
   const idArray = users.map(elm => elm._id);
   for (var id of idArray) {
