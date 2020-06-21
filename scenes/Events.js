@@ -2,16 +2,30 @@ require("./Scenes");
 
 const dicts = require('../dicts.json');
 function foodParser(text) {
-  var obj = [];
-  text.toLowerCase().split(' ').forEach(elm=>{
-    for (var key in dicts){
-      if(dicts[key].includes(elm)){
+  let obj = []
+  for(let key in dicts){
+    dicts[key].forEach(elm=>{
+      if(text.toLowerCase().indexOf(elm)> -1 && !obj.includes(key)){
         obj.push(key)
       }
-    }
-  })
-  return obj;
+    })
+  }
+  return obj
 }
+
+function foodIndexOfParser(text) {
+  var obc = []
+  for (var key in dicts){
+    for (let word in key){
+      if(text.indexOf(word)> -1){
+        obc.push({w: word, k: key})
+      }
+    }
+  }
+  return obc
+}
+
+console.log(foodIndexOfParser("В связи с отъездом домой на каникулы отдам крупы. Мюсли, одна порция пасты, гороховый суп, гречка 1 кг, кукурузные хлопья на завтрак, примерно стакан муки, имбирный кисель. Все открытое, но хранилось недолго, самые старые открыты в конце апреля. 20 минут пешком от Автово, или 6-7 минут на транспорте"))
 
 function distance(lat1, lon1, lat2, lon2) {
   if (lat1 === lat2 && lon1 === lon2) {
