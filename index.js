@@ -24,6 +24,6 @@ global.Controller.on("DataBaseConnected", async () => {
   await global.bot.launch();
   setInterval(() => {
     foodshare.map(name => vk.getPosts(name, 10));
-  }, 60000);
+  }, 6000); //TODO: 60000
   console.log("Listening...");
 });

@@ -1,27 +1,33 @@
 require("./Scenes");
 
-const dicts = require('../dicts.json');
+const dicts = require("../dicts.json");
 function foodParser(text) {
-  let obj = []
-  for(let key in dicts){
-    dicts[key].forEach(elm=>{
-      if(text.toLowerCase().indexOf(elm)> -1 && !obj.includes(key)){
-        obj.push(key)
+  let obj = [];
+  for (let key in dicts) {
+    dicts[key].forEach(elm => {
+      if (text.toLowerCase().indexOf(elm) > -1 && !obj.includes(key)) {
+        obj.push(key);
       }
-    })
+    });
   }
-  return obj
+  return obj;
 }
 
 function generateMessage(obj) {
-  return `${obj.name?obj.name+"\n":''}`
-      // todo: добавить расстояние до пользователя как часть объекта
-      +`${obj.distance?obj.distance+" км до места\n":''}`
-      +`${obj.city?"Город: "+obj.city+'🏢\n':''}`
-      +`${obj.burnTime?"Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
-      +`${obj.commentary?obj.commentary+"\n":''}`
-      +`${obj.category.length?obj.category.map(elm=>elm+" ")+"\n":''}`
-      +`${obj.profileLink?`Связь: ${obj.profileLink}`:"Контактов нет"}`
+  return (
+    `${obj.name ? obj.name + "\n" : ""}` +
+    // todo: добавить расстояние до пользователя как часть объекта
+    `${obj.distance ? obj.distance + " км до места\n" : ""}` +
+    `${obj.city ? "Город: " + obj.city + "🏢\n" : ""}` +
+    `${
+      obj.burnTime
+        ? "Истекает через " + obj.burnTime.getHours() + " часов\n"
+        : ""
+    }` +
+    `${obj.commentary ? obj.commentary + "\n" : ""}` +
+    `${obj.category.length ? obj.category.map(elm => elm + " ") + "\n" : ""}` +
+    `${obj.profileLink ? `Связь: ${obj.profileLink}` : "Контактов нет"}`
+  );
 }
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -50,24 +56,23 @@ async function sendForAll(product) {
   const idArray = users.map(elm => elm._id);
   idArray.map(async id => {
     await global.ctx.telegram.sendMediaGroup(
-        id,
-        product.photos.map(function(item, index) {
-          return { type: "photo", media: item.id }
-        })
+      id,
+      product.photos.map(function(item, index) {
+        return { type: "photo", media: item.id };
+      })
     );
     await global.ctx.telegram.sendMessage(id, generateMessage(product));
   });
 }
 
-async function getVkEvent(post) {
-
-}
+async function getVkEvent(post) {}
 
 async function checkVkPost(post) {
   const details = { _id: post._id };
   const res = await global.DataBaseController.get("vkPosts", details);
   console.log(details, res);
-  if (res.length === 0) {
+  if (res.length !== 0) {
+    //TODO: ===
     const res = await global.DataBaseController.set("vkPosts", post);
     global.Controller.emit("newVkPost", post);
   }
@@ -84,4 +89,4 @@ global.Controller.struct = {
     ["checkVkPosts", checkVkPosts],
     ["newVkPost", getVkEvent]
   ]
-}
+};
