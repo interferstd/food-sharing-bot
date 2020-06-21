@@ -43,6 +43,7 @@ class Vk {
             url: "https://vk.com/id" + item.from_id,
             text: item.text,
             att: (item.attachments || [])
+              .filter(photo => photo.type === "photo")
               .map(photo => photo.photo)
               .map(item => {
                 const photo = {
