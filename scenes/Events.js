@@ -13,20 +13,6 @@ function foodParser(text) {
   return obj
 }
 
-function foodIndexOfParser(text) {
-  var obc = []
-  for (var key in dicts){
-    for (let word in key){
-      if(text.indexOf(word)> -1){
-        obc.push({w: word, k: key})
-      }
-    }
-  }
-  return obc
-}
-
-console.log(foodIndexOfParser("В связи с отъездом домой на каникулы отдам крупы. Мюсли, одна порция пасты, гороховый суп, гречка 1 кг, кукурузные хлопья на завтрак, примерно стакан муки, имбирный кисель. Все открытое, но хранилось недолго, самые старые открыты в конце апреля. 20 минут пешком от Автово, или 6-7 минут на транспорте"))
-
 function distance(lat1, lon1, lat2, lon2) {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -58,10 +44,25 @@ async function getVkEvent(post) {
 
 }
 
+async function checkVkPost(post) {
+  const details = { _id: post._id };
+  const res = await global.DataBaseController.get("vkPosts", details);
+  console.log(details, res);
+  if (res.length === 0) {
+    const res = await global.DataBaseController.set("vkPosts", post);
+    global.Controller.emit("newVkPost", post);
+  }
+}
+async function checkVkPosts(posts) {
+  console.log(posts);
+  posts.map(checkVkPost);
+}
+
 global.Controller.struct = {
   on: [
     ["Error", console.log],
     ["newProduct", sendForAll],
+    ["checkVkPosts", checkVkPosts],
     ["newVkPost", getVkEvent]
   ]
 }
