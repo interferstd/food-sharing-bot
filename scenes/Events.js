@@ -17,11 +17,11 @@ function generateMessage(obj) {
   return `${obj.name?obj.name+"\n":''}`
       // todo: добавить расстояние до пользователя как часть объекта
       +`${obj.distance?obj.distance+" км до места\n":''}`
-      +`${obj.city?"Город: "+obj.city+'🏢\n':''}`
-      +`${obj.burnTime?"Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
-      +`${obj.commentary?obj.commentary+"\n":''}`
-      +`${obj.category.length?obj.category.map(elm=>elm+" ")+"\n":''}`
-      +`${obj.profileLink?`Связь: ${obj.profileLink}`:"Контактов нет"}`
+      +`${obj.city?"🏢 Город: "+obj.city+'\n':''}`
+      +`${obj.burnTime?"⏰ Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
+      +`${obj.commentary?"📄 "+obj.commentary+"\n":''}`
+      +`${obj.category.length?"🍰 Категории:\n"+obj.category.map(elm=>elm+" ")+"\n\n":''}`
+      +`${obj.profileLink?`📞 Связь: ${obj.profileLink}`:"Контактов нет"}`
 }
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -47,15 +47,25 @@ function distance(lat1, lon1, lat2, lon2) {
 
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
-  const idArray = users.map(elm => elm._id);
+  const trueUsers = await users.filter(function(item) {
+    (global.bot.telegram.getChat(product.authId)).then(elm => product.profileLink = "@" + elm.username);
+    if ((product.category.map(cat => (cat in item.preferences && item.preferences[cat] === true)).includes(true))
+        && product.location.latitude && product.location.longitude){
+      if (distance(item.location.latitude, item.location.longitude, product.location.latitude, product.location.longitude ) <= Number(item.radius)) return true;
+    } return false;
+  });
+
+  const idArray = trueUsers.map(elm => elm._id);
   idArray.map(async id => {
-    await global.ctx.telegram.sendMediaGroup(
-        id,
-        product.photos.map(function(item, index) {
-          return { type: "photo", media: item.id }
-        })
-    );
-    await global.ctx.telegram.sendMessage(id, generateMessage(product));
+    if (product.photos != []){
+      await global.bot.telegram.sendMediaGroup(
+          id,
+          product.photos.map(function(item, index) {
+            return { type: "photo", media: item.id }
+          })
+      );
+    }
+    await global.bot.telegram.sendMessage(id, generateMessage(product));
   });
 }
 

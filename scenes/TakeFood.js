@@ -52,19 +52,13 @@ new (class TakeFood extends Scene {
     const lots = await ctx.base.get("product");
     const userLocation = user[0].location;
 
-    const trueLots = lots.filter( async function(item) {
-      item.profileLink = '@' + (await global.bot.telegram.getChat(item.authId)).username;
+    const trueLots = lots.filter(function(item) {
+      (global.bot.telegram.getChat(item.authId)).then(elm => item.profileLink = "@" + elm.username);
       if ((item.category.map(cat => (cat in user[0].preferences && user[0].preferences[cat] === true)).includes(true))
-          && item.location.latitude && item.location.longitude)
-        if (
-          distance(
-            userLocation.latitude,
-            userLocation.longitude,
-            item.location.latitude,
-            item.location.longitude
-          ) <= Number(user[0].radius)
-        )
-          return item;
+          && item.location.latitude && item.location.longitude){
+        if (distance(userLocation.latitude, userLocation.longitude, item.location.latitude, item.location.longitude ) <= Number(user[0].radius)) return true;
+      }
+      return false;
     });
     trueLots.map(async lot => {
       await ctx.telegram.sendMediaGroup(
