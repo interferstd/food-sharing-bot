@@ -1,25 +1,5 @@
 const { Scene, Markup } = require("./Scenes");
-
-const distance = function(lat1, lon1, lat2, lon2) {
-  if (lat1 === lat2 && lon1 === lon2) {
-    return 0;
-  } else {
-    let radlat1 = (Math.PI * lat1) / 180;
-    let radlat2 = (Math.PI * lat2) / 180;
-    let theta = lon1 - lon2;
-    let radtheta = (Math.PI * theta) / 180;
-    let dist =
-      Math.sin(radlat1) * Math.sin(radlat2) +
-      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    if (dist > 1) {
-      dist = 1;
-    }
-    dist = Math.acos(dist);
-    dist = (dist * 180) / Math.PI;
-    dist = dist * 60 * 1.1515;
-    return dist * 1.609344;
-  }
-};
+const { relevance } = require("../relevant");
 
 function generateMessage(obj) {
   return (
@@ -60,33 +40,9 @@ new (class TakeFood extends Scene {
     );
     const user = await ctx.base.get("config", { _id: ctx.from.id });
     const lots = await ctx.base.get("product");
-    const userLocation = user[0].location;
-
-    const trueLots = lots.filter(function(item) {
-      global.bot.telegram
-        .getChat(item.authId)
-        .then(elm => (item.profileLink = "@" + elm.username));
-      if (
-        item.category
-          .map(
-            cat =>
-              cat in user[0].preferences && user[0].preferences[cat] === true
-          )
-          .includes(true) &&
-        item.location.latitude &&
-        item.location.longitude
-      ) {
-        if (
-          distance(
-            userLocation.latitude,
-            userLocation.longitude,
-            item.location.latitude,
-            item.location.longitude
-          ) <= Number(user[0].radius)
-        )
-          return true;
-      }
-      return false;
+    const trueLots = lots.filter(function (lot){
+      global.bot.telegram.getChat(lot.authId).then(elm => (lot.profileLink = "@" + elm.username));
+      return relevance(lot, user[0])
     });
     for (var lot of trueLots) {
       await global.bot.telegram.sendMediaGroup(

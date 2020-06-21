@@ -52,7 +52,7 @@ new (class NameQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Введите название продукта🍽",
-      Markup.keyboard(["Назад↩", "Пропустить🔜"])
+      Markup.keyboard(["Пропустить🔜", "Назад↩"])
         .oneTime()
         .resize()
         .extra()
@@ -88,7 +88,7 @@ new (class PhotoQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
       "Загрузите от 1 до 10 фотографий продукта🖼",
-      Markup.keyboard(["Загрузить💿", "Назад↩", "Пропустить🔜"])
+      Markup.keyboard(["Загрузить💿", "Пропустить🔜", "Назад↩"])
         .oneTime()
         .resize()
         .extra()
@@ -173,7 +173,7 @@ new (class TakeTimeQuery extends Scene {
   async enter(ctx) {
     await ctx.reply(
         "В течение скольки часов забрать еду?⏰",
-        Markup.keyboard(["Назад↩", "Пропустить🔜"])
+        Markup.keyboard(["Пропустить🔜", "Назад↩"])
         .oneTime()
         .resize()
         .extra()

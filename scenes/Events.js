@@ -1,4 +1,5 @@
 require("./Scenes");
+const { relevance } = require("../relevant");
 
 const dicts = require("../dicts.json");
 function foodParser(text) {
@@ -30,54 +31,15 @@ function generateMessage(obj) {
   );
 }
 
-function distance(lat1, lon1, lat2, lon2) {
-  if (lat1 === lat2 && lon1 === lon2) {
-    return 0;
-  } else {
-    let radlat1 = (Math.PI * lat1) / 180;
-    let radlat2 = (Math.PI * lat2) / 180;
-    let theta = lon1 - lon2;
-    let radtheta = (Math.PI * theta) / 180;
-    let dist =
-      Math.sin(radlat1) * Math.sin(radlat2) +
-      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    if (dist > 1) {
-      dist = 1;
-    }
-    dist = Math.acos(dist);
-    dist = (dist * 180) / Math.PI;
-    dist = dist * 60 * 1.1515;
-    return dist * 1.609344;
-  }
-}
-
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
-  // const trueUsers = await users.filter(function(item) {
-  //   global.bot.telegram
-  //     .getChat(product.authId)
-  //     .then(elm => (product.profileLink = "@" + elm.username));
-  //   if (
-  //     product.category
-  //       .map(cat => cat in item.preferences && item.preferences[cat] === true)
-  //       .includes(true) &&
-  //     product.location.latitude &&
-  //     product.location.longitude
-  //   ) {
-  //     if (
-  //       distance(
-  //         item.location.latitude,
-  //         item.location.longitude,
-  //         product.location.latitude,
-  //         product.location.longitude
-  //       ) <= Number(item.radius)
-  //     )
-  //       return true;
-  //   }
-  //   return false;
-  // });
+  const idArray = users.filter(function (item){
+    global.bot.telegram
+         .getChat(product.authId)
+         .then(elm => (product.profileLink = "@" + elm.username));
+    return relevance(product, item)
+  }).map(elm => elm._id);
 
-  const idArray = users.map(elm => elm._id);
   for (var id of idArray) {
     if (product.photos != []) {
       await global.bot.telegram.sendMediaGroup(
