@@ -202,7 +202,13 @@ new (class ConfCity extends Scene {
     if (ctx.message.text === "Назад↩") {
       ctx.scene.enter("Configuration");
     } else {
-      ctx.session.baseConfig.city = ctx.message.text;
+      const addr = ctx.message.text;
+      ctx.session.baseConfig.city = addr;
+      ctx.session.baseConfig.location = await global.google.geocode(
+        JSON.stringify({
+          address: addr
+        })
+      );
       await ctx.reply("Вы успешно обновили город!🎉");
       await ctx.scene.enter("Configuration");
     }

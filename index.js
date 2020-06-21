@@ -6,8 +6,9 @@ const {
   ScenesController
 } = require("./scenes");
 
-const { telegram, vk_token, foodshare } = require("./config.json");
-global.bot = new Telegraf(telegram);
+const { telegram, vk_token, foodshare, geocode } = require("./config.json");
+global.geocode = require("node-geocoder")(geocode);
+const bot = new Telegraf(telegram);
 const vk = require("./vk.js").get(vk_token);
 
 global.bot.use(

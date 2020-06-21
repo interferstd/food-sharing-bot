@@ -58,7 +58,7 @@ new (class getStartUserRadius extends Scene {
       ctx.session.baseConfig.radius = ctx.message.text;
       await ctx.scene.enter("getStartUserCity");
     } else {
-      ctx.reply("Радиус должен быть больше 0 и меньше 100❗")
+      ctx.reply("Радиус должен быть больше 0 и меньше 100❗");
     }
   }
 })();
@@ -76,7 +76,9 @@ new (class getStartUserCity extends Scene {
     await ctx.reply("Введите ваш город🏙");
   }
   async onText(ctx) {
-    ctx.session.baseConfig.city = ctx.message.text;
+    const addr = ctx.message.text;
+    ctx.session.baseConfig.city = addr;
+    ctx.session.baseConfig.location = await global.google.geocode(addr);
     await ctx.scene.enter("getStartUserLocation");
   }
 })();
@@ -99,7 +101,10 @@ new (class getStartUserLocation extends Scene {
         return markup
           .oneTime()
           .resize()
-          .keyboard([markup.locationRequestButton("Отправить✉"), "Пропустить🔜"]);
+          .keyboard([
+            markup.locationRequestButton("Отправить✉"),
+            "Пропустить🔜"
+          ]);
       })
     );
   }
