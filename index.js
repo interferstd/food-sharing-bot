@@ -22,10 +22,10 @@ global.bot.start(ctx => ctx.scene.enter("Start"));
 
 global.Controller.on("DataBaseConnected", async () => {
   await global.bot.launch();
+  await global.DataBaseController.remove("product");
+  await global.DataBaseController.remove("vkPosts");
   setInterval(() => {
-    foodshare.map(name => vk.getPosts(name, 10));
-  }, 6000); //TODO: 60000
-  global.DataBaseController.remove("product");
-  global.DataBaseController.remove("vkPosts");
+    foodshare.map(name => vk.getPosts(name, 3));
+  }, 6000); //TODO: 10 60000
   global.console.log("Listening...");
 });

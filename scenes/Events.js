@@ -53,39 +53,42 @@ function distance(lat1, lon1, lat2, lon2) {
 
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
-<<<<<<< HEAD
+  // const trueUsers = await users.filter(function(item) {
+  //   global.bot.telegram
+  //     .getChat(product.authId)
+  //     .then(elm => (product.profileLink = "@" + elm.username));
+  //   if (
+  //     product.category
+  //       .map(cat => cat in item.preferences && item.preferences[cat] === true)
+  //       .includes(true) &&
+  //     product.location.latitude &&
+  //     product.location.longitude
+  //   ) {
+  //     if (
+  //       distance(
+  //         item.location.latitude,
+  //         item.location.longitude,
+  //         product.location.latitude,
+  //         product.location.longitude
+  //       ) <= Number(item.radius)
+  //     )
+  //       return true;
+  //   }
+  //   return false;
+  // });
+
   const idArray = users.map(elm => elm._id);
   for (var id of idArray) {
-    await global.bot.telegram.sendMediaGroup(
-      id,
-      product.photos.map(function(item, index) {
-        return { type: "photo", media: item.id };
-      })
-    );
-    await global.bot.telegram.sendMessage(id, generateMessage(product));
-  }
-=======
-  const trueUsers = await users.filter(function(item) {
-    (global.bot.telegram.getChat(product.authId)).then(elm => product.profileLink = "@" + elm.username);
-    if ((product.category.map(cat => (cat in item.preferences && item.preferences[cat] === true)).includes(true))
-        && product.location.latitude && product.location.longitude){
-      if (distance(item.location.latitude, item.location.longitude, product.location.latitude, product.location.longitude ) <= Number(item.radius)) return true;
-    } return false;
-  });
-
-  const idArray = trueUsers.map(elm => elm._id);
-  idArray.map(async id => {
-    if (product.photos != []){
+    if (product.photos != []) {
       await global.bot.telegram.sendMediaGroup(
-          id,
-          product.photos.map(function(item, index) {
-            return { type: "photo", media: item.id }
-          })
+        id,
+        product.photos.map(function(item, index) {
+          return { type: "photo", media: item.id };
+        })
       );
     }
     await global.bot.telegram.sendMessage(id, generateMessage(product));
-  });
->>>>>>> d59d5e6164447f1efd1c7ecf9e512a8fd70acef1
+  }
 }
 
 async function getVkEvent(post) {
