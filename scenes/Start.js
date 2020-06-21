@@ -63,7 +63,6 @@ new (class getStartUserRadius extends Scene {
   }
 })();
 
-//TODO: в будущем убрать город, так как можно его получить через Api карт
 new (class getStartUserCity extends Scene {
   constructor() {
     super("getStartUserCity");

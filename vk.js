@@ -27,6 +27,7 @@ class Vk {
         extended: 1
       },
       function(data) {
+        console.log(data);
         var ret = undefined;
         function getPosto(item) {
           for (var photo in item)
@@ -36,6 +37,8 @@ class Vk {
             }
           return ret;
         }
+
+
         const posts = data.items.map(item => {
           var location = undefined;
           const post = {
