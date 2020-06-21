@@ -3,7 +3,7 @@ const { relevance, generateMessage, foodParser } = require("../relevant");
 
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
-  users = users.filter(user => relevant(product, user) && user.alerts);
+  users = users.filter(user => relevance(product, user) && user.alerts);
   const idArray = users.map(elm => elm._id);
   for (var id of idArray) {
     if (product.photos != []) {
