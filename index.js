@@ -6,32 +6,23 @@ const {
   ScenesController
 } = require("./scenes");
 
-const { telegram, geocode } = require("./config.json");
-
-const nodeFetch = require("node-fetch");
-// geocode.fetch = (url, options) => {
-//   return nodeFetch(url, {
-//     ...options,
-//     headers: {
-//       "user-agent": "My application <email@domain.com>",
-//       "X-Specific-Header": "Specific value"
-//     }
-//   });
-// };
-global.google = require("node-geocoder")(geocode);
-
+const { telegram, vk_token, foodshare, geocode } = require("./config.json");
+global.geocode = require("node-geocoder")(geocode);
 const bot = new Telegraf(telegram);
+const vk = require("./vk.js").get(vk_token);
 
-bot.use(
+global.bot.use(
   session(),
   require("./wrappers"),
   // Telegraf.log(),
   global.Scenes.stage.middleware()
 );
-
-bot.start(ctx => ctx.scene.enter("Start"));
+global.bot.start(ctx => ctx.scene.enter("Start"));
 
 global.Controller.on("DataBaseConnected", async () => {
-  await bot.launch();
+  await global.bot.launch();
+  setInterval(() => {
+    foodshare.map(name => vk.getPosts(name, 10));
+  }, 60000);
   console.log("Listening...");
 });

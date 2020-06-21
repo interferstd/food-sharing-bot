@@ -19,15 +19,49 @@ class Vk {
     await User.api(
       "wall.get",
       {
-        //owner_id: -1,
+        // owner_id: -1,
+        // fields: {},
         domain: domain,
         count: count,
-        filter: "others"
-        //extended: 1
+        filter: "others",
+        extended: 1
       },
       function(data) {
-        console.log(data.items.map(item => item.text)); //TODO: Как блять достать data отсюда?
-        // TODO: ивент сделай
+        var ret = undefined;
+        function getPosto(item) {
+          for (var photo in item)
+            if (/(\w)_(\d\d*)/.test(photo)) {
+              ret = item[photo];
+              break;
+            }
+          return ret;
+        }
+        const posts = data.items.map(item => {
+          var location = undefined;
+          const post = {
+            _id: item.id,
+            url: "https://vk.com/id" + item.from_id,
+            text: item.text,
+            att: item.attachments
+              .map(photo => photo.photo)
+              .map(item => {
+                const photo = {
+                  user_id: item.user_id,
+                  key: item.access_key,
+                  photo: getPosto(item)
+                };
+                if (!location && item.lat && item.long)
+                  location = {
+                    latitude: item.lat,
+                    longitude: item.long
+                  };
+                return photo;
+              })
+          };
+          post.location = location;
+          return post;
+        });
+        global.Controller.emit("checkVkPosts", posts);
       }
     );
   }

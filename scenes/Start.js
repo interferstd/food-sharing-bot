@@ -109,7 +109,6 @@ new (class getStartUserLocation extends Scene {
     );
   }
   async onText(ctx) {
-    // Todo: Если нет геолокации, то по городу определяем
     if (ctx.message.text === "Пропустить🔜")
       await ctx.scene.enter("getStartUserName");
   }
