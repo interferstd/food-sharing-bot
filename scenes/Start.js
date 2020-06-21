@@ -76,9 +76,12 @@ new (class getStartUserCity extends Scene {
     await ctx.reply("Введите ваш город🏙");
   }
   async onText(ctx) {
-    const addr = ctx.message.text;
-    ctx.session.baseConfig.city = addr;
-    ctx.session.baseConfig.location = await global.google.geocode(addr);
+    const addr = await global.google.geocode(ctx.message.text);
+    ctx.session.baseConfig.city = addr[0].state;
+    ctx.session.baseConfig.location = {
+      latitude: addr[0].latitude,
+      longitude: addr[0].longitude
+    };
     await ctx.scene.enter("getStartUserLocation");
   }
 })();
