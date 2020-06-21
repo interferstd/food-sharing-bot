@@ -1,5 +1,17 @@
 require("./Scenes");
 
+const dicts = require('../dicts.json');
+function foodParser(text) {
+  let obj = []
+  for(let key in dicts){
+    dicts[key].forEach(elm=>{
+      if(text.toLowerCase().indexOf(elm)> -1 && !obj.includes(key)){
+        obj.push(key)
+      }
+    })
+  }
+  return obj
+}
 
 function generateMessage(obj) {
   return `${obj.name?obj.name+"\n":''}`
@@ -48,7 +60,7 @@ async function sendForAll(product) {
 }
 
 async function getVkEvent(post) {
-  console.log(post);
+
 }
 
 async function checkVkPost(post) {
