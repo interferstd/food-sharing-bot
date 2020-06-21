@@ -62,9 +62,10 @@ new (class TakeFood extends Scene {
     const lots = await ctx.base.get("product");
     const userLocation = user[0].location;
 
-    const trueLots = lots.filter(async function(item) {
-      item.profileLink =
-        "@" + (await global.bot.telegram.getChat(item.authId)).username;
+    const trueLots = lots.filter(function(item) {
+      global.bot.telegram
+        .getChat(item.authId)
+        .then(elm => (item.profileLink = "@" + elm.username));
       if (
         item.category
           .map(
@@ -74,7 +75,7 @@ new (class TakeFood extends Scene {
           .includes(true) &&
         item.location.latitude &&
         item.location.longitude
-      )
+      ) {
         if (
           distance(
             userLocation.latitude,
@@ -83,7 +84,9 @@ new (class TakeFood extends Scene {
             item.location.longitude
           ) <= Number(user[0].radius)
         )
-          return item;
+          return true;
+      }
+      return false;
     });
     for (var lot of trueLots) {
       await global.bot.telegram.sendMediaGroup(
