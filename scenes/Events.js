@@ -1,6 +1,17 @@
 require("./Scenes");
 
 
+function generateMessage(obj) {
+  return `${obj.name?obj.name+"\n":''}`
+      // todo: добавить расстояние до пользователя как часть объекта
+      +`${obj.distance?obj.distance+" км до места\n":''}`
+      +`${obj.city?"Город: "+obj.city+'🏢\n':''}`
+      +`${obj.burnTime?"Истекает через "+obj.burnTime.getHours()+" часов\n":''}`
+      +`${obj.commentary?obj.commentary+"\n":''}`
+      +`${obj.category.length?obj.category.map(elm=>elm+" ")+"\n":''}`
+      +`${obj.profileLink?`Связь: ${obj.profileLink}`:"Контактов нет"}`
+}
+
 function distance(lat1, lon1, lat2, lon2) {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -25,7 +36,15 @@ function distance(lat1, lon1, lat2, lon2) {
 async function sendForAll(product) {
   const users = await global.DataBaseController.get("config");
   const idArray = users.map(elm => elm._id);
-  idArray.map(async id => await global.bot.telegram.sendMessage(id, "123"));
+  idArray.map(async id => {
+    await global.ctx.telegram.sendMediaGroup(
+        id,
+        product.photos.map(function(item, index) {
+          return { type: "photo", media: item.id }
+        })
+    );
+    await global.ctx.telegram.sendMessage(id, generateMessage(product));
+  });
 }
 
 async function getVkEvent(post) {
