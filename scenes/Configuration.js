@@ -202,7 +202,7 @@ new (class ConfCity extends Scene {
     if (ctx.message.text === "Назад↩") {
       ctx.scene.enter("Configuration");
     } else {
-      const addr = await global.google.geocode(ctx.message.text);
+      const addr = await global.geocode.geocode(ctx.message.text);
       ctx.session.baseConfig.city = addr[0].state;
       ctx.session.baseConfig.location = {
         latitude: addr[0].latitude,

@@ -76,7 +76,7 @@ new (class getStartUserCity extends Scene {
     await ctx.reply("Введите ваш город🏙");
   }
   async onText(ctx) {
-    const addr = await global.google.geocode(ctx.message.text);
+    const addr = await global.geocode.geocode(ctx.message.text);
     ctx.session.baseConfig.city = addr[0].state;
     ctx.session.baseConfig.location = {
       latitude: addr[0].latitude,
